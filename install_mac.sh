@@ -3,5 +3,4 @@
 set -e
 set -v
 
-# find ~/Library/Fonts/ -name 'iosevka-custom*' -delete
-cp build_dir/dist/iosevka-custom/ttf/* ~/Library/Fonts/
+cp -f -v build_dir/*.ttf ~/Library/Fonts/
