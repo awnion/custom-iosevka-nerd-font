@@ -1,6 +1,16 @@
 [buildPlans.iosevka-custom]               # <iosevka-custom> is your plan name
 family = "Iosevka Custom"                 # Font menu family name
-design = ["sp-term", "cv04", "cv08",  "cv19", "cv21", "cv26",  "cv62", "cv93"]       # Customize styles
+# Customize styles
+design = [
+    "sp-term", 
+    "cv04", # i fix
+    "cv08", # l fix
+    "cv14", # zero dot style
+    "cv19", 
+    "cv26", # short m
+    "cv62", # % dot style
+    # "cv93", # zero top-left slash
+]
 # upright = ["upright-styles"]            # Uncomment this line to set styles for upright only
 # italic = ["italic-styles"]              # Uncomment this line to set styles for italic only
 # oblique = ["oblique-styles"]            # Uncomment this line to set styles for oblique only
@@ -14,36 +24,25 @@ hintParams = ["-a", "sss"]                # Optional custom parameters for ttfau
 #             and "shape" properly only supports number between 100 and 900 (inclusive).
 #             If you decide to use custom weights you have to define all the weights you
 #             plan to use otherwise they will not be built.
-
-# [buildPlans.iosevka-custom.weights.thin]
-# shape = 100
-# menu  = 100
-# css   = 100
-
 [buildPlans.iosevka-custom.weights.light]
 shape = 200
-menu  = 200
-css   = 200
-
-[buildPlans.iosevka-custom.weights.regular]
-shape = 300
 menu  = 300
 css   = 300
 
-[buildPlans.iosevka-custom.weights.medium]
-shape = 400
+[buildPlans.iosevka-custom.weights.regular]
+shape = 300
 menu  = 400
 css   = 400
 
-[buildPlans.iosevka-custom.weights.bold]
-shape = 500
+[buildPlans.iosevka-custom.weights.medium]
+shape = 400
 menu  = 500
 css   = 500
 
-[buildPlans.iosevka-custom.weights.heavy]
-shape = 600
-menu  = 600
-css   = 600
+[buildPlans.iosevka-custom.weights.bold]
+shape = 500
+menu  = 700
+css   = 700
 
 # End weight section
 ###################################################################################################
@@ -71,7 +70,7 @@ upright = "normal"
 #             plan to use otherwise they will not be built.
 
 [buildPlans.iosevka-custom.widths.normal]
-shape = 6          # Width grade of glyph shapes. NOT actual character width.
+shape = 7          # Width grade of glyph shapes. NOT actual character width.
 menu  = 5          # Width grade for the font's names. NOT actual character width.
 css   = "normal"   # "font-stretch' property of webfont CSS.
 

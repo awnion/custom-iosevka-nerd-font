@@ -1,4 +1,5 @@
-![](https://github.com/awnion/myfonts/blob/master/imgs/iosevka-custom.png?raw=true)
+![](https://github.com/awnion/myfonts/blob/master/imgs/iosevka-custom-dark.png?raw=true)
+![](https://github.com/awnion/myfonts/blob/master/imgs/iosevka-custom-light.png?raw=true)
 
 # myfonts
 
@@ -14,8 +15,7 @@ See iosevka/private-build-plans.toml for details
 ### Build && Install
 
 ```
-./build.sh
-./patch.sh
+./build_iosevka_custom.sh
 ```
 
 Instal on Mac
@@ -28,10 +28,10 @@ Instal on Mac
 vscode settings.json
 ```
 ...
-"editor.fontFamily": "Iosevka Nerd Font",
-"editor.fontWeight": "300",
-"editor.fontSize": 17,
-"editor.lineHeight": 22,
+"editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
+"editor.fontWeight": "400",
+"editor.fontSize": 16,
+"editor.lineHeight": 21,
 ...
 ```
 
