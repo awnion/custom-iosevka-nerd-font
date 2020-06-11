@@ -10,7 +10,7 @@
 * No italic and oblique versions included by default
 * Changed font weights (e.g. "bold" has weight 500)
 
-See iosevka/private-build-plans.toml for details
+For more options edit: `iosevka/private-build-plans.toml`
 
 ### Build && Install
 
