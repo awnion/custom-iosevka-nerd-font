@@ -5,11 +5,10 @@ design = [
     "sp-term", # Make the symbols' width suitable for terminal emulators. Arrows and geometric symbols will become narrower
     "cv04", # i fix
     "cv08", # l fix
-    "cv14", # zero dot style
-    "cv19", 
-    "cv26", # short m
+    "cv14", # 0 dot style
+    "cv19", # * vertical position middle
+    "cv26", # m short middle line
     "cv62", # % dot style
-    # "cv93", # zero top-left slash
 ]
 # upright = ["upright-styles"]            # Uncomment this line to set styles for upright only
 # italic = ["italic-styles"]              # Uncomment this line to set styles for italic only
