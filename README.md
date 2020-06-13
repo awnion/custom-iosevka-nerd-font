@@ -1,9 +1,19 @@
 # Custom Iosevka Nerd Font
 
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-dark.png" alt="">
+    </td>
+    <td>
+      <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-light.png" alt="">
+    </td>
+  </tr>
+</table>
+
 ## Get
-| Dark | Light |
-|-|-|
-| ![dark](docs/imgs/iosevka-custom-dark.png) | ![light](docs/imgs/iosevka-custom-light.png) |
+
+[Releases](https://github.com/awnion/custom-iosevka-nerd-font/releases)
 
 ## Motivation
 
@@ -12,14 +22,14 @@
 * need only specific font weights (e.g. 200 300 400 500)
 * need to fake bold weight to 500
 * need specific base font width
-* need nerd font version
+* need nerd font icons
 * need oneliner to build everything :)
 
 ## Key modifications
 
 * Changed `m i l % 0` and others
 * Changed font weights (e.g. "bold" has weight 500)
-* No italic and oblique versions by default (can be included optionally)
+* No italic and oblique versions by default
 * Base font shape width is `6`
 
 For more options edit: `private-build-plans.toml` and build
@@ -32,7 +42,7 @@ For more options edit: `private-build-plans.toml` and build
 
 Fonts will be in `_output` dir.
 
-vscode settings.json
+### vscode settings.json
 ```
 ...
 "editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
