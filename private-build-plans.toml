@@ -2,7 +2,7 @@
 family = "Iosevka Custom"                 # Font menu family name
 # Customize styles
 design = [
-    "sp-term", 
+    "sp-term", # Make the symbols' width suitable for terminal emulators. Arrows and geometric symbols will become narrower
     "cv04", # i fix
     "cv08", # l fix
     "cv14", # zero dot style
@@ -73,11 +73,6 @@ upright = "normal"
 shape = 6          # Width grade of glyph shapes. NOT actual character width.
 menu  = 5          # Width grade for the font's names. NOT actual character width.
 css   = "normal"   # "font-stretch' property of webfont CSS.
-
-# [buildPlans.iosevka-custom.widths.extended]
-# shape = 7
-# menu  = 7
-# css   = "expanded"
 
 # End width section
 ###################################################################################################

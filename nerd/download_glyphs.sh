@@ -1,9 +1,6 @@
 #!/bin/bash
 
 set -e
-# set -v
-
-cd glyphs
 
 GLYPHS=$(cat <<-END
 devicons.ttf
@@ -20,6 +17,8 @@ Unicode_IEC_symbol_font.otf
 weathericons-regular-webfont.ttf
 END
 )
+
+cd glyphs
 
 for f in $GLYPHS
 do

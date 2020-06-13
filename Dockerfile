@@ -1,5 +1,3 @@
-FROM debian:sid-slim
-
 ARG BUILD_DIR=/build
 ARG NODE_VER=14
 ARG PREMAKE_VER=5.0.0-alpha15
@@ -7,23 +5,40 @@ ARG OTFCC_VER=0.10.4
 # Check https://github.com/be5invis/Iosevka/releases for font version
 ARG FONT_VERSION=3.1.1
 
+################################################################
+
+FROM debian:sid-slim AS base_builder
+
+ARG BUILD_DIR
+ARG NODE_VER
+
 ENV DEBIAN_FRONTEND=noninteractive
+ENV BUILD_DIR=${BUILD_DIR}
 
 RUN true \
     && apt-get update -yqq \
     && apt-get install --no-install-recommends -yqq \
         build-essential \
-        curl \
         ca-certificates \
+        curl \
+        fontforge \
+        python3-fontforge \
+        python3-pip \
         ttfautohint \
     && curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash - \
     && apt-get install --no-install-recommends -yqq \
         nodejs \
+    && pip3 install -q configparser \
     && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete
 
 
-WORKDIR ${BUILD_DIR}
+FROM base_builder AS builder_otf
 
+ARG BUILD_DIR
+ARG OTFCC_VER
+ARG PREMAKE_VER
+
+WORKDIR ${BUILD_DIR}
 # Install premake
 RUN curl -sSLo premake5.tar.gz https://github.com/premake/premake-core/releases/download/v${PREMAKE_VER}/premake-${PREMAKE_VER}-linux.tar.gz \
     && tar xvf premake5.tar.gz \
@@ -41,6 +56,13 @@ RUN curl -sSLo otfcc.tar.gz https://github.com/caryll/otfcc/archive/v${OTFCC_VER
     && mv otfcc/bin/release-x64/otfccdump /usr/local/bin/otfccdump \
     && rm -rf otfcc
 
+
+FROM base_builder AS builder_iosevka
+
+ARG BUILD_DIR
+ARG FONT_VERSION
+
+WORKDIR ${BUILD_DIR}
 # Download original font source
 RUN curl -sSLo v${FONT_VERSION}.tar.gz https://github.com/be5invis/Iosevka/archive/v${FONT_VERSION}.tar.gz \
     && tar xvf v${FONT_VERSION}.tar.gz \
@@ -52,3 +74,22 @@ RUN true \
     && grep -v ttf2woff package.json > new_package.json \
     && mv new_package.json package.json \
     && npm install
+
+COPY --from=builder_otf /usr/local/bin/otfccbuild /usr/local/bin/otfccbuild
+COPY --from=builder_otf /usr/local/bin/otfccdump /usr/local/bin/otfccdump
+
+COPY private-build-plans.toml .
+RUN echo "\n\n\n !!! Building fonts: May take a few minutes..." \
+    && npm run build -- ttf::iosevka-custom
+
+WORKDIR ${BUILD_DIR}/src/glyphs
+COPY nerd/glyphs .
+
+WORKDIR ${BUILD_DIR}
+COPY nerd/font-patcher .
+
+WORKDIR ${BUILD_DIR}
+COPY docker_run.sh .
+RUN chmod +x docker_run.sh
+
+CMD [ "./docker_run.sh" ]
