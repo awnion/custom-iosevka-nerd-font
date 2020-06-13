@@ -1,39 +1,36 @@
 # Custom Iosevka Nerd Font
 
-![](https://github.com/awnion/custom-iosevka-nerd-font/blob/master/docs/imgs/iosevka-custom-dark.png?raw=true)
-![](https://github.com/awnion/custom-iosevka-nerd-font/blob/master/docs/imgs/iosevka-custom-light.png?raw=true)
+## Get
+| Dark | Light |
+|-|-|
+| ![dark](docs/imgs/iosevka-custom-dark.png) | ![light](docs/imgs/iosevka-custom-light.png) |
 
-### Motivation
+## Motivation
 
-* need to control original Iosevka styles
-* don't need WOFF
+* Iosevka has a lot of modificaions, but Nerd Font repo has only a few of them
 * don't need italic and oblique versions (so can speed up compilation)
 * need only specific font weights (e.g. 200 300 400 500)
 * need to fake bold weight to 500
 * need specific base font width
 * need nerd font version
+* need oneliner to build everything :)
 
-### Key modifications
+## Key modifications
 
-* Changed m i l % and others
+* Changed `m i l % 0` and others
 * Changed font weights (e.g. "bold" has weight 500)
 * No italic and oblique versions by default (can be included optionally)
 * Base font shape width is `6`
 
 For more options edit: `private-build-plans.toml` and build
 
-### Build it yourself with Docker
+## Build it yourself with Docker
 
 ```
 ./build.sh
 ```
 
-Instal on Mac
-```
-./install_mac.sh
-# or 
-# cp -f -v build_dir/*.ttf ~/Library/Fonts/
-```
+Fonts will be in `_output` dir.
 
 vscode settings.json
 ```
@@ -45,7 +42,7 @@ vscode settings.json
 ...
 ```
 
-### Links
+## Links
 
 * Iosevka webpage https://typeof.net/Iosevka/
 * Build Iosevka font using docker https://github.com/ejuarezg/containers/tree/master/iosevka_font#container-method
