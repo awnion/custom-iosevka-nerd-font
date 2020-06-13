@@ -89,7 +89,7 @@ WORKDIR ${BUILD_DIR}
 COPY nerd/font-patcher .
 
 WORKDIR ${BUILD_DIR}
-COPY docker_run.sh .
-RUN chmod +x docker_run.sh
+COPY docker_run.py .
+RUN chmod +x docker_run.py
 
-CMD [ "./docker_run.sh" ]
+CMD [ "./docker_run.py" ]

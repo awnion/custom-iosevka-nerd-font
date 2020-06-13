@@ -1,4 +1,4 @@
-[buildPlans.iosevka-custom]               # <iosevka-custom> is your plan name
+[buildPlans.iosevka-custom]               # <iosevka> is your plan name
 family = "Iosevka Custom"                 # Font menu family name
 # Customize styles
 design = [
