@@ -1,19 +1,15 @@
 # Custom Iosevka Nerd Font
 
-<table>
-  <tr>
-    <td>
-      <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-dark.png" alt="">
-    </td>
-    <td>
-      <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-light.png" alt="">
-    </td>
-  </tr>
-</table>
+<p float="left">
+  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-dark.png" alt="" height="150px">
+  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-light.png" alt="" height="150px">
+</p>
 
-## Get
 
-[Releases](https://github.com/awnion/custom-iosevka-nerd-font/releases)
+## Download
+
+Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) page
+
 
 ## Motivation
 
@@ -25,6 +21,7 @@
 * need nerd font icons
 * need oneliner to build everything :)
 
+
 ## Key modifications
 
 * Changed `m i l % 0` and others
@@ -34,16 +31,18 @@
 
 For more options edit: `private-build-plans.toml` and build
 
+
 ## Build it yourself with Docker
 
-```
+```bash
 ./build.sh
 ```
 
 Fonts will be in `_output` dir.
 
+
 ### vscode settings.json
-```
+```jsonc
 ...
 "editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
 "editor.fontWeight": "400",
@@ -51,6 +50,7 @@ Fonts will be in `_output` dir.
 "editor.lineHeight": 21,
 ...
 ```
+
 
 ## Links
 
