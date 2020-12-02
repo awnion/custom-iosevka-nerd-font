@@ -1,19 +1,16 @@
-[buildPlans.iosevka-custom]               # <iosevka> is your plan name
-family = "Iosevka Custom"                 # Font menu family name
-# Customize styles
-design = [
-    "sp-term", # Make the symbols' width suitable for terminal emulators. Arrows and geometric symbols will become narrower
-    "cv04", # i fix
-    "cv08", # l fix
-    "cv14", # 0 dot style
-    "cv19", # * vertical position middle
-    "cv26", # m short middle line
-    "cv62", # % dot style
-]
-# upright = ["upright-styles"]            # Uncomment this line to set styles for upright only
-# italic = ["italic-styles"]              # Uncomment this line to set styles for italic only
-# oblique = ["oblique-styles"]            # Uncomment this line to set styles for oblique only
-hintParams = ["-a", "sss"]                # Optional custom parameters for ttfautohint
+[buildPlans.iosevka-custom]
+family = "Iosevka Custom"
+spacing = "term"
+serifs = "sans"
+
+[buildPlans.iosevka-custom.variants.design]
+nine = "open-contour"
+i = "serifed-flat-tailed"
+l = "serifed-flat-tailed"
+zero = "dotted"
+asterisk = "hexlow"
+m = "shortleg"
+percent = "dots"
  
 ###################################################################################################
 # Override default building weights
@@ -69,38 +66,9 @@ upright = "normal"
 #             plan to use otherwise they will not be built.
 
 [buildPlans.iosevka-custom.widths.normal]
-shape = 6          # Width grade of glyph shapes. NOT actual character width.
+shape = 540        # Width grade of glyph shapes. NOT actual character width.
 menu  = 5          # Width grade for the font's names. NOT actual character width.
 css   = "normal"   # "font-stretch' property of webfont CSS.
-
-# End width section
-###################################################################################################
-
-###################################################################################################
-# Character Exclusion
-# Specify character ranges in the section below to exclude certain characters from the font being
-# built. Remove this section when this feature is not needed.
-
-# [buildPlans.iosevka-custom.exclude-chars]
-# ranges = [[10003, 10008]]
-
-# End character exclusion
-###################################################################################################
-
-###################################################################################################
-# Compatibility Ligatures
-# Certain applications like Emacs does not support proper programming liagtures provided by
-# OpenType, but can support ligatures provided by PUA codepoints. Therefore you can edit the
-# following section to build PUA characters that are generated from the OpenType ligatures.
-# Remove this section when compatibility ligatures are not needed.
-
-# [[buildPlans.iosevka-custom.compatibility-ligatures]]
-# unicode = 57600 # 0xE100
-# featureTag = 'calt'
-# sequence = '<*>'
-
-# End compatibility ligatures section
-###################################################################################################
 
 ###################################################################################################
 # Metric overrides

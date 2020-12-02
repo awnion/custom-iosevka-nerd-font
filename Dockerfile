@@ -3,11 +3,11 @@ ARG NODE_VER=14
 ARG PREMAKE_VER=5.0.0-alpha15
 ARG OTFCC_VER=0.10.4
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=3.1.1
+ARG FONT_VERSION=4.0.0
 
 ################################################################
 
-FROM debian:sid-slim AS base_builder
+FROM debian:buster-slim AS base_builder
 
 ARG BUILD_DIR
 ARG NODE_VER
@@ -22,13 +22,13 @@ RUN true \
         ca-certificates \
         curl \
         fontforge \
-        python3-fontforge \
-        python3-pip \
+        python-fontforge \
+        python-pip \
         ttfautohint \
     && curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash - \
     && apt-get install --no-install-recommends -yqq \
         nodejs \
-    && pip3 install -q configparser \
+    && pip install -q configparser \
     && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete
 
 
@@ -79,7 +79,7 @@ COPY --from=builder_otf /usr/local/bin/otfccbuild /usr/local/bin/otfccbuild
 COPY --from=builder_otf /usr/local/bin/otfccdump /usr/local/bin/otfccdump
 
 COPY private-build-plans.toml .
-RUN echo "\n\n\n !!! Building fonts: May take a few minutes..." \
+RUN echo "...Building fonts: May take a few minutes..." \
     && npm run build -- ttf::iosevka-custom
 
 WORKDIR ${BUILD_DIR}/src/glyphs
@@ -92,4 +92,4 @@ WORKDIR ${BUILD_DIR}
 COPY docker_run.py .
 RUN chmod +x docker_run.py
 
-CMD [ "./docker_run.py" ]
+CMD [ "/bin/bash", "-c", "time ./docker_run.py" ]

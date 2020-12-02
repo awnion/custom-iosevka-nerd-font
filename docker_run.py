@@ -12,10 +12,24 @@ from zipfile import ZipFile, ZIP_DEFLATED
 def patch_fonts(index, ttf_file):
     output_dir = environ.get('OUTPUT_DIR', '/output')
     log_file = f'{output_dir}/patch.{index}.log'
-    command = (
-        f'python3 font-patcher -c -q -w '
-        f'-out "{output_dir}" "{ttf_file}" >>"{log_file}" 2>&1'
-    )
+    command = " ".join([
+        f'python font-patcher -q',
+        f'-s',
+        f'-l',
+        f'-c',
+        f'--careful',
+        # f'--fontawesome',
+        # f'--fontawesomeextension',
+        # f'--fontlinux',
+        # f'--octicons',
+        # f'--powersymbols',
+        # f'--pomicons',
+        # f'--powerline',
+        # f'--powerlineextra',
+        # f'--material',
+        # f'--weather',
+        f'-out "{output_dir}" "{ttf_file}" >>"{log_file}" 2>&1',
+    ])
     print('Run command:', command)
     os.system(command)
     print('Finish command:', command)
