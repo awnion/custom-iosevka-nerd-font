@@ -220,38 +220,7 @@ class font_patcher:
             additionalFontNameSuffix = " " + projectNameAbbreviation
         else:
             additionalFontNameSuffix = verboseAdditionalFontNameSuffix
-        if not self.args.complete:
-            # NOTE not all symbol fonts have appended their suffix here
-            if self.args.fontawesome:
-                additionalFontNameSuffix += " A"
-                verboseAdditionalFontNameSuffix += " Plus Font Awesome"
-            if self.args.fontawesomeextension:
-                additionalFontNameSuffix += " AE"
-                verboseAdditionalFontNameSuffix += " Plus Font Awesome Extension"
-            if self.args.octicons:
-                additionalFontNameSuffix += " O"
-                verboseAdditionalFontNameSuffix += " Plus Octicons"
-            if self.args.powersymbols:
-                additionalFontNameSuffix += " PS"
-                verboseAdditionalFontNameSuffix += " Plus Power Symbols"
-            if self.args.pomicons:
-                additionalFontNameSuffix += " P"
-                verboseAdditionalFontNameSuffix += " Plus Pomicons"
-            if self.args.fontlinux:
-                additionalFontNameSuffix += " L"
-                verboseAdditionalFontNameSuffix += " Plus Font Logos (Font Linux)"
-            if self.args.material:
-                additionalFontNameSuffix += " MDI"
-                verboseAdditionalFontNameSuffix += " Plus Material Design Icons"
-            if self.args.weather:
-                additionalFontNameSuffix += " WEA"
-                verboseAdditionalFontNameSuffix += " Plus Weather Icons"
-
-        # if all source glyphs included simplify the name
-        else:
-            additionalFontNameSuffix = " " + projectNameSingular + " Complete"
-            verboseAdditionalFontNameSuffix = " " + projectNameSingular + " Complete"
-
+        
         # add mono signifier to end of name
         if self.args.single:
             additionalFontNameSuffix += " M"
@@ -313,48 +282,6 @@ class font_patcher:
         # the same name as the same font, even if subFamily is different.
         fontname += '-' + subFamily
 
-        # rename font
-        #
-        # comply with SIL Open Font License (OFL)
-        reservedFontNameReplacements = {
-            'source'         : 'sauce',
-            'Source'         : 'Sauce',
-            'hermit'         : 'hurmit',
-            'Hermit'         : 'Hurmit',
-            'hasklig'        : 'hasklug',
-            'Hasklig'        : 'Hasklug',
-            'Share'          : 'Shure',
-            'share'          : 'shure',
-            'IBMPlex'        : 'Blex',
-            'ibmplex'        : 'blex',
-            'IBM-Plex'       : 'Blex',
-            'IBM Plex'       : 'Blex',
-            'terminus'       : 'terminess',
-            'Terminus'       : 'Terminess',
-            'liberation'     : 'literation',
-            'Liberation'     : 'Literation',
-            'iAWriter'       : 'iMWriting',
-            'iA Writer'      : 'iM Writing',
-            'iA-Writer'      : 'iM-Writing',
-            'Anka/Coder'     : 'AnaConder',
-            'anka/coder'     : 'anaconder',
-            'Cascadia Code'  : 'Caskaydia Cove',
-            'cascadia code'  : 'caskaydia cove',
-            'CascadiaCode'   : 'CaskaydiaCove',
-            'cascadiacode'   : 'caskaydiacove'
-        }
-
-        # remove overly verbose font names
-        # particularly regarding Powerline sourced Fonts (https://github.com/powerline/fonts)
-        additionalFontNameReplacements = {
-            'for Powerline': '',
-            'ForPowerline': ''
-        }
-
-        additionalFontNameReplacements2 = {
-            'Powerline': ''
-        }
-
         projectInfo = (
             "Patched with '" + projectName + " Patcher' (https://github.com/ryanoasis/nerd-fonts)\n\n"
             "* Website: https://www.nerdfonts.com\n"
@@ -363,15 +290,7 @@ class font_patcher:
             "* Changelog: https://github.com/ryanoasis/nerd-fonts/blob/master/changelog.md"
         )
 
-        familyname = replace_font_name(familyname, reservedFontNameReplacements)
-        fullname   = replace_font_name(fullname,   reservedFontNameReplacements)
-        fontname   = replace_font_name(fontname,   reservedFontNameReplacements)
-        familyname = replace_font_name(familyname, additionalFontNameReplacements)
-        fullname   = replace_font_name(fullname,   additionalFontNameReplacements)
-        fontname   = replace_font_name(fontname,   additionalFontNameReplacements)
-        familyname = replace_font_name(familyname, additionalFontNameReplacements2)
-        fullname   = replace_font_name(fullname,   additionalFontNameReplacements2)
-        fontname   = replace_font_name(fontname,   additionalFontNameReplacements2)
+        print('SF >>>', fontname, fullname, familyname)
 
         # replace any extra whitespace characters:
         self.sourceFont.familyname = " ".join(familyname.split())
