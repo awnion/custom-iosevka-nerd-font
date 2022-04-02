@@ -5,11 +5,9 @@
   <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-light.png" alt="" height="230px">
 </p>
 
-
 ## Download
 
 Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) page
-
 
 ## Motivation
 
@@ -21,7 +19,6 @@ Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) pa
 * need nerd font icons
 * need oneliner to build everything :)
 
-
 ## Key modifications
 
 * Changed `m i l % 0` and others
@@ -31,7 +28,6 @@ Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) pa
 
 For more options edit: `private-build-plans.toml` and build
 
-
 ## Build it yourself with Docker
 
 ```bash
@@ -40,8 +36,8 @@ For more options edit: `private-build-plans.toml` and build
 
 Fonts will be in `_output` dir.
 
-
 ### vscode settings.json
+
 ```jsonc
 ...
 "editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
@@ -51,9 +47,8 @@ Fonts will be in `_output` dir.
 ...
 ```
 
-
 ## Links
 
-* Iosevka webpage https://typeof.net/Iosevka/
-* Build Iosevka font using docker https://github.com/ejuarezg/containers/tree/master/iosevka_font#container-method
-* Nerd Font patcher https://github.com/ryanoasis/nerd-fonts
+* Iosevka webpage <https://typeof.net/Iosevka/>
+* Build Iosevka font using docker <https://github.com/ejuarezg/containers/tree/master/iosevka_font#container-method>
+* Nerd Font patcher <https://github.com/ryanoasis/nerd-fonts>
