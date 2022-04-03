@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.4
+
 ARG BUILD_DIR=/build
 ARG NODE_VER=14
 ARG PREMAKE_VER=5.0.0-alpha15
@@ -15,8 +17,8 @@ ARG NODE_VER
 ENV DEBIAN_FRONTEND=noninteractive
 ENV BUILD_DIR=${BUILD_DIR}
 
-RUN true \
-    && apt-get update -yqq \
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update -yqq \
     && apt-get install --no-install-recommends -yqq \
         build-essential \
         ca-certificates \
