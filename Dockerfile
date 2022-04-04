@@ -1,11 +1,13 @@
 # syntax=docker/dockerfile:1.4
 
 ARG BUILD_DIR=/build
+ARG FONT_NAME=afio
+
 ARG NODE_VER=14
 ARG PREMAKE_VER=5.0.0-alpha15
 ARG OTFCC_VER=0.10.4
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=4.0.0
+ARG FONT_VERSION=15.1.0
 
 ################################################################
 
@@ -17,21 +19,23 @@ ARG NODE_VER
 ENV DEBIAN_FRONTEND=noninteractive
 ENV BUILD_DIR=${BUILD_DIR}
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update -yqq \
-    && apt-get install --no-install-recommends -yqq \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt <<EOF
+    set -e
+    apt update -yqq
+    apt-get install --no-install-recommends -yqq \
         build-essential \
         ca-certificates \
         curl \
         fontforge \
         python-fontforge \
         python-pip \
-        ttfautohint \
-    && curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash - \
-    && apt-get install --no-install-recommends -yqq \
-        nodejs \
-    && pip install -q configparser \
-    && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete
+        ttfautohint
+    curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash -
+    apt-get install --no-install-recommends -yqq nodejs
+    pip install -q configparser
+EOF
 
 
 FROM base_builder AS builder_otf
@@ -61,8 +65,10 @@ RUN curl -sSLo otfcc.tar.gz https://github.com/caryll/otfcc/archive/v${OTFCC_VER
 
 FROM base_builder AS builder_iosevka
 
+ARG FONT_NAME
 ARG BUILD_DIR
 ARG FONT_VERSION
+
 
 WORKDIR ${BUILD_DIR}
 # Download original font source
@@ -82,7 +88,7 @@ COPY --from=builder_otf /usr/local/bin/otfccdump /usr/local/bin/otfccdump
 
 COPY private-build-plans.toml .
 RUN echo "...Building fonts: May take a few minutes..." \
-    && npm run build -- ttf::iosevka-custom
+    && npm run build -- ttf::${FONT_NAME}
 
 WORKDIR ${BUILD_DIR}/src/glyphs
 COPY nerd/glyphs .
@@ -94,4 +100,5 @@ WORKDIR ${BUILD_DIR}
 COPY docker_run.py .
 RUN chmod +x docker_run.py
 
+ENV FONT_NAME=${FONT_NAME}
 CMD [ "/bin/bash", "-c", "time ./docker_run.py" ]

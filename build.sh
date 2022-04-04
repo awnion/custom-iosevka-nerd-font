@@ -5,7 +5,7 @@ set -e
 export DOCKER_BUILDKIT=1
 
 OUTPUT_DIR=$(pwd)/_output
-IMAGE_TAG=custom_iosevka_builder
+IMAGE_TAG=afio_builder
 
 rm -rf "$OUTPUT_DIR"
 echo "Build docker image: $IMAGE_TAG"

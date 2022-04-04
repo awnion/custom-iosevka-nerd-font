@@ -38,15 +38,16 @@ def patch_fonts(index, ttf_file):
 def main():
     build_dir = environ.get('BUILD_DIR', '/build')
     output_dir = environ.get('OUTPUT_DIR', '/output')
+    font_name = environ.get('FONT_NAME', 'afio')
 
-    ttf_dir = path.join(build_dir, 'Iosevka/dist/iosevka-custom/ttf')
+    ttf_dir = path.join(build_dir, f'Iosevka/dist/{font_name}/ttf')
     ttf_files = glob.glob(f'{ttf_dir}/*.ttf', recursive=True)
 
     with Pool(8) as pool:
         pool.starmap(patch_fonts, enumerate(ttf_files))
 
     today = date.today().strftime('%Y-%m-%d')
-    zip_filename = f'{output_dir}/iosevka-custom-{today}.zip'
+    zip_filename = f'{output_dir}/{font_name}-{today}.zip'
 
     print('Make archive:', zip_filename)
     with ZipFile(zip_filename, 'w', compression=ZIP_DEFLATED, compresslevel=9) as archive:
