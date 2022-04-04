@@ -30,11 +30,9 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
         curl \
         fontforge \
         python3-fontforge \
-        python3-pip \
         ttfautohint
     curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash -
     apt-get install --no-install-recommends -yqq nodejs
-    pip3 install -q configparser
 EOF
 
 
