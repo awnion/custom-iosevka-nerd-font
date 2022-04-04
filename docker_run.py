@@ -13,7 +13,7 @@ def patch_fonts(index, ttf_file):
     output_dir = environ.get('OUTPUT_DIR', '/output')
     log_file = f'{output_dir}/patch.{index}.log'
     command = " ".join([
-        f'python font-patcher -q',
+        f'python3 font-patcher -q',
         f'-s',
         f'-l',
         f'-c',

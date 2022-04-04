@@ -1,9 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf8
 # Nerd Fonts Version: 2.1.0
 # script version: 3.0.1
-
-from __future__ import absolute_import, print_function, unicode_literals
 
 version = "2.1.0"
 projectName = "Nerd Fonts"
@@ -736,12 +734,12 @@ class font_patcher:
 
 
     def remove_glyph_neg_bearings(self, glyph):
-        """ Sets passed glyph's bearings 0.0 if they are negative. """
+        """ Sets passed glyph's bearings 0 if they are negative. """
         try:
-            if glyph.left_side_bearing < 0.0:
-                glyph.left_side_bearing = 0.0
-            if glyph.right_side_bearing < 0.0:
-                glyph.right_side_bearing = 0.0
+            if glyph.left_side_bearing < 0:
+                glyph.left_side_bearing = 0
+            if glyph.right_side_bearing < 0:
+                glyph.right_side_bearing = 0
         except:
             pass
 

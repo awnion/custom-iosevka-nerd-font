@@ -11,7 +11,7 @@ ARG FONT_VERSION=15.1.0
 
 ################################################################
 
-FROM debian:buster-slim AS base_builder
+FROM debian:bullseye-slim AS base_builder
 
 ARG BUILD_DIR
 ARG NODE_VER
@@ -23,18 +23,18 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt <<EOF
     set -e
-    apt update -yqq
+    apt-get update -yqq
     apt-get install --no-install-recommends -yqq \
         build-essential \
         ca-certificates \
         curl \
         fontforge \
-        python-fontforge \
-        python-pip \
+        python3-fontforge \
+        python3-pip \
         ttfautohint
     curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash -
     apt-get install --no-install-recommends -yqq nodejs
-    pip install -q configparser
+    pip3 install -q configparser
 EOF
 
 
