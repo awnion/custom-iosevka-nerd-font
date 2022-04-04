@@ -5,6 +5,7 @@ serifs = "sans"
 no-cv-ss = true
 
 [buildPlans.afio.variants.design]
+f = "flat-hook-crossbar-at-x-height"
 i = "tailed-serifed"
 l = "tailed-serifed"
 m = "short-leg"
@@ -24,7 +25,7 @@ css = "normal"
 # shape = "oblique"
 # menu = "oblique"
 # css = "oblique"
- 
+
 ###################################################################################################
 # Override default building weights
 # When buildPlans.<plan name>.weights is absent, all weights would built and mapped to
