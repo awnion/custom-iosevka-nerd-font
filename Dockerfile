@@ -31,6 +31,7 @@ RUN \
         python3-fontforge \
         ttfautohint
 EOF
+RUN npm install -g bun
 
 
 FROM base_builder AS iosevka_src
@@ -58,8 +59,8 @@ COPY --link private-build-plans.toml .
 RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/Iosevka/node_modules \
 <<-EOF
     set -ex
-    npm i
-    npm run build -- ttf::${FONT_NAME}
+    bun i
+    bun run build -- ttf::${FONT_NAME}
 EOF
 
 WORKDIR ${BUILD_DIR}/src/glyphs
