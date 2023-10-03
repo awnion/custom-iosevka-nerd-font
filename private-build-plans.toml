@@ -3,12 +3,13 @@ family = "afio"
 spacing = "term"
 serifs = "sans"
 no-cv-ss = true
+export-glyph-names = false
 
 [buildPlans.afio.variants.design]
-f = "flat-hook-crossbar-at-x-height"
+f = "flat-hook-serifless-crossbar-at-x-height"
 i = "tailed-serifed"
 l = "tailed-serifed"
-m = "short-leg"
+m = "short-leg-serifless"
 zero = "dotted"
 nine = "open-contour"
 asterisk = "hex-low"

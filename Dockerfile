@@ -1,27 +1,26 @@
-# syntax=docker/dockerfile:1.4
+# syntax=docker/dockerfile:1.6
 
 ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
-ARG NODE_VER=14
-ARG PREMAKE_VER=5.0.0-alpha15
-ARG OTFCC_VER=0.10.4
+ARG NODE_MAJOR=20
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=15.1.0
+ARG FONT_VERSION=27.1.0
 
 ################################################################
 
-FROM debian:bullseye-slim AS base_builder
+FROM node:20-bullseye-slim AS base_builder
 
-ARG BUILD_DIR
-ARG NODE_VER
+ARG TARGETARCH
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV BUILD_DIR=${BUILD_DIR}
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt <<EOF
+RUN \
+    --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
+    --mount=type=cache,id=apt-${TARGETARCH},target=/var/lib/apt \
+<<EOF
     set -e
     apt-get update -yqq
     apt-get install --no-install-recommends -yqq \
@@ -31,62 +30,37 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
         fontforge \
         python3-fontforge \
         ttfautohint
-    curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash -
-    apt-get install --no-install-recommends -yqq nodejs
 EOF
 
 
-FROM base_builder AS builder_otf
+FROM base_builder AS iosevka_src
 
-ARG BUILD_DIR
-ARG OTFCC_VER
-ARG PREMAKE_VER
+ARG FONT_VERSION
 
-WORKDIR ${BUILD_DIR}
-# Install premake
-RUN curl -sSLo premake5.tar.gz https://github.com/premake/premake-core/releases/download/v${PREMAKE_VER}/premake-${PREMAKE_VER}-linux.tar.gz \
-    && tar xvf premake5.tar.gz \
-    && mv premake5 /usr/local/bin/premake5 \
-    && rm premake5.tar.gz
-
-# Build&install OTFCC
-RUN curl -sSLo otfcc.tar.gz https://github.com/caryll/otfcc/archive/v${OTFCC_VER}.tar.gz \
-    && tar xvf otfcc.tar.gz \
-    && rm otfcc.tar.gz \
-    && mv otfcc-${OTFCC_VER} otfcc \
-    && (cd otfcc && premake5 gmake) \
-    && (cd otfcc/build/gmake && make config=release_x64) \
-    && mv otfcc/bin/release-x64/otfccbuild /usr/local/bin/otfccbuild \
-    && mv otfcc/bin/release-x64/otfccdump /usr/local/bin/otfccdump \
-    && rm -rf otfcc
+WORKDIR /
+RUN <<-EOF
+    set -ex
+    curl -sSL https://github.com/be5invis/Iosevka/archive/v${FONT_VERSION}.tar.gz | tar xvz
+    mv /Iosevka-${FONT_VERSION} /Iosevka
+EOF
 
 
 FROM base_builder AS builder_iosevka
 
+ARG TARGETARCH
 ARG FONT_NAME
 ARG BUILD_DIR
-ARG FONT_VERSION
-
-
-WORKDIR ${BUILD_DIR}
-# Download original font source
-RUN curl -sSLo v${FONT_VERSION}.tar.gz https://github.com/be5invis/Iosevka/archive/v${FONT_VERSION}.tar.gz \
-    && tar xvf v${FONT_VERSION}.tar.gz \
-    && rm v${FONT_VERSION}.tar.gz \
-    && mv Iosevka-${FONT_VERSION} Iosevka
 
 WORKDIR ${BUILD_DIR}/Iosevka
-RUN true \
-    && grep -v ttf2woff package.json > new_package.json \
-    && mv new_package.json package.json \
-    && npm install
+COPY --link --from=iosevka_src /Iosevka .
+COPY --link private-build-plans.toml .
 
-COPY --from=builder_otf /usr/local/bin/otfccbuild /usr/local/bin/otfccbuild
-COPY --from=builder_otf /usr/local/bin/otfccdump /usr/local/bin/otfccdump
-
-COPY private-build-plans.toml .
-RUN echo "...Building fonts: May take a few minutes..." \
-    && npm run build -- ttf::${FONT_NAME}
+RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/Iosevka/node_modules \
+<<-EOF
+    set -ex
+    npm i
+    npm run build -- ttf::${FONT_NAME}
+EOF
 
 WORKDIR ${BUILD_DIR}/src/glyphs
 COPY nerd/glyphs .
