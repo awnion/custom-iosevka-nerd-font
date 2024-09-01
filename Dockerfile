@@ -1,15 +1,14 @@
-# syntax=docker/dockerfile:1.6
+# syntax=docker/dockerfile:1.9
 
 ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
-ARG NODE_MAJOR=20
 # Check https://github.com/be5invis/Iosevka/releases for font version
 ARG FONT_VERSION=27.1.0
 
 ################################################################
 
-FROM node:20-bullseye-slim AS base_builder
+FROM oven/bun:debian AS base_builder
 
 ARG TARGETARCH
 
@@ -31,7 +30,6 @@ RUN \
         python3-fontforge \
         ttfautohint
 EOF
-RUN npm install -g bun
 
 
 FROM base_builder AS iosevka_src
