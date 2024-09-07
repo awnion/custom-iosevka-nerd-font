@@ -18,6 +18,9 @@ def patch_fonts(index, ttf_file):
         f'-l',
         f'-c',
         f'--careful',
+        f'--makegroups -1', # don't rename font
+
+        ## optional
         # f'--fontawesome',
         # f'--fontawesomeextension',
         # f'--fontlinux',
@@ -40,7 +43,7 @@ def main():
     output_dir = environ.get('OUTPUT_DIR', '/output')
     font_name = environ.get('FONT_NAME', 'afio')
 
-    ttf_dir = path.join(build_dir, f'Iosevka/dist/{font_name}/ttf')
+    ttf_dir = path.join(build_dir, f'Iosevka/dist/{font_name}/TTF')
     ttf_files = glob.glob(f'{ttf_dir}/*.ttf', recursive=True)
 
     with Pool(8) as pool:

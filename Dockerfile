@@ -4,7 +4,7 @@ ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=27.1.0
+ARG FONT_VERSION=29.0.1
 
 ################################################################
 
@@ -57,18 +57,19 @@ COPY --link private-build-plans.toml .
 RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/Iosevka/node_modules \
 <<-EOF
     set -ex
+    export CACHE=2
     bun i
     bun run build -- ttf::${FONT_NAME}
 EOF
 
 WORKDIR ${BUILD_DIR}/src/glyphs
-COPY nerd/glyphs .
+COPY --link nerd/glyphs .
 
 WORKDIR ${BUILD_DIR}
-COPY nerd/font-patcher .
+COPY --link nerd/font-patcher .
 
 WORKDIR ${BUILD_DIR}
-COPY docker_run.py .
+COPY --link ./src/docker_run.py .
 RUN chmod +x docker_run.py
 
 ENV FONT_NAME=${FONT_NAME}

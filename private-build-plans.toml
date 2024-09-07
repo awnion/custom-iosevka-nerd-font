@@ -2,7 +2,7 @@
 family = "afio"
 spacing = "term"
 serifs = "sans"
-no-cv-ss = true
+noCvSs = true
 export-glyph-names = false
 
 [buildPlans.afio.variants.design]
