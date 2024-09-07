@@ -57,7 +57,6 @@ COPY --link private-build-plans.toml .
 RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/Iosevka/node_modules \
 <<-EOF
     set -ex
-    export CACHE=2
     bun i
     bun run build -- ttf::${FONT_NAME}
 EOF
