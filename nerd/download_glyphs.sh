@@ -11,6 +11,7 @@ xargs -n1 -P20 -I{} curl --create-dirs -svLo {} "$BASE_URL"/{} <<EOF
 "codicons/codicon.ttf"
 "devicons/devicons.ttf"
 "font-awesome/FontAwesome.otf"
+"materialdesign/MaterialDesignIconsDesktop.ttf"
 "materialdesign/materialdesignicons-webfont.ttf"
 "octicons/octicons.ttf"
 "pomicons/Pomicons.otf"
@@ -21,4 +22,5 @@ xargs -n1 -P20 -I{} curl --create-dirs -svLo {} "$BASE_URL"/{} <<EOF
 "font-awesome-extension.ttf"
 "font-logos.ttf"
 "original-source.otf"
+"extraglyphs.sfd"
 EOF
