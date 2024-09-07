@@ -40,7 +40,7 @@ WORKDIR /
 RUN <<-EOF
     set -ex
     curl -sSL https://github.com/be5invis/Iosevka/archive/v${FONT_VERSION}.tar.gz | tar xvz
-    mv /Iosevka-${FONT_VERSION} /Iosevka
+    mv /Iosevka-${FONT_VERSION} /iosevka
 EOF
 
 
@@ -50,11 +50,11 @@ ARG TARGETARCH
 ARG FONT_NAME
 ARG BUILD_DIR
 
-WORKDIR ${BUILD_DIR}/Iosevka
-COPY --link --from=iosevka_src /Iosevka .
+WORKDIR ${BUILD_DIR}/iosevka
 COPY --link private-build-plans.toml .
+COPY --from=iosevka_src /iosevka .
 
-RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/Iosevka/node_modules \
+RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/iosevka/node_modules \
 <<-EOF
     set -ex
     bun i
