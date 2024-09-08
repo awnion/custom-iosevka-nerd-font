@@ -47,7 +47,7 @@ Fonts will be in `_output` dir.
 
 ```jsonc
 ...
-"editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
+"editor.fontFamily": "afio",
 "editor.fontWeight": "400",
 "editor.fontSize": 16,
 "editor.lineHeight": 21,
