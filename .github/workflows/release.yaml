@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -21,7 +23,6 @@ jobs:
         id: get_version
         run: |
           # Get the latest tag, filter to versions with "v" prefix, sort them by version, and take the latest
-          git fetch --tags
           git describe --tags --match "v[0-9]*" --abbrev=0
           VERSION=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "Current version: $VERSION"
