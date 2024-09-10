@@ -48,7 +48,7 @@ jobs:
         run: ls -R dist
 
       - name: Prepare name
-        run: mv ./output/afio-*.zip afio-${{ env.new_version }}.zip
+        run: mv ./_output/afio-*.zip afio-${{ env.new_version }}.zip
 
       - uses: ncipollo/release-action@v1
         with:
