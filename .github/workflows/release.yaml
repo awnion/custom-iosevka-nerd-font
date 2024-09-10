@@ -55,10 +55,5 @@ jobs:
           allowUpdates: true
           prerelease: true
           artifacts: "afio-${{ env.new_version }}.zip"
-          tag: ${{ github.ref_name }}
+          tag: ${{ env.new_version }}-rc
           removeArtifacts: true
-
-      - name: Tag the new version
-        run: |
-          git tag ${{ env.new_version }}
-          git push origin ${{ env.new_version }}
