@@ -8,7 +8,7 @@ ARG FONT_VERSION=31.6.0
 
 ################################################################
 
-FROM node:22-slim AS base_builder
+FROM oven/bun:debian AS base_builder
 
 ARG TARGETARCH
 
@@ -57,8 +57,8 @@ COPY --from=iosevka_src /iosevka .
 RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/iosevka/node_modules \
 <<-EOF
     set -ex
-    npm i
-    npm run build -- ttf::${FONT_NAME}
+    bun i
+    bun run build -- ttf::${FONT_NAME}
 EOF
 
 WORKDIR ${BUILD_DIR}/src/glyphs
