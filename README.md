@@ -7,10 +7,8 @@
 
 ## TODO
 
-- [ ] Update images
-- [ ] Fix fontpatcher to make custom font family names
-- [ ] Make a release
-- [ ] Windows friendly fontfamily name
+- [ ] Update README images and/or ideally generate them every release
+- [ ] Windows friendly fontfamily name (might be already good, just need to test it)
 
 ## Download
 
