@@ -11,6 +11,7 @@ rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 echo "Build docker image: $IMAGE_TAG"
 docker buildx build -t $IMAGE_TAG \
+    --load \
     --iidfile "$OUTPUT_DIR"/iddfile \
     .
 IMAGE_ID=$(cat "$OUTPUT_DIR"/iddfile)
