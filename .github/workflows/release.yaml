@@ -41,6 +41,23 @@ jobs:
           echo "New version: $NEW_VERSION"
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
+      - name: Build font
+        run: ./build.sh
+
+      - name: Display structure of created files
+        run: ls -R dist
+
+      - name: Prepare name
+        run: mv ./output/afio-*.zip afio-${{ env.new_version }}.zip
+
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          prerelease: true
+          artifacts: "afio-${{ env.new_version }}.zip"
+          tag: ${{ github.ref_name }}
+          removeArtifacts: true
+
       - name: Tag the new version
         run: |
           git tag ${{ env.new_version }}
