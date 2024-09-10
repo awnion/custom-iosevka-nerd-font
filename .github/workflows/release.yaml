@@ -45,7 +45,7 @@ jobs:
         run: ./build.sh
 
       - name: Display structure of created files
-        run: ls -R dist
+        run: ls -R ./_output
 
       - name: Prepare name
         run: mv ./_output/afio-*.zip afio-${{ env.new_version }}.zip
