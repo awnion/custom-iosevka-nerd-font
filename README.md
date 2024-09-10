@@ -7,10 +7,8 @@
 
 ## TODO
 
-- [ ] Update images
-- [ ] Fix fontpatcher to make custom font family names
-- [ ] Make a release
-- [ ] Windows friendly fontfamily name
+- [ ] Update README images and/or ideally generate them every release
+- [ ] Windows friendly fontfamily name (might be already good, just need to test it)
 
 ## Download
 
@@ -47,7 +45,7 @@ Fonts will be in `_output` dir.
 
 ```jsonc
 ...
-"editor.fontFamily": "Iosevka Nerd Font, Iosevka Custom",
+"editor.fontFamily": "afio",
 "editor.fontWeight": "400",
 "editor.fontSize": 16,
 "editor.lineHeight": 21,

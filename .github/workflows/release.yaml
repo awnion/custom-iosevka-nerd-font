@@ -1,0 +1,59 @@
+name: Release "afio" Font
+
+on:
+  push:
+    branches:
+      - main
+      - ci/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get current version from tags
+        id: get_version
+        run: |
+          # Get the latest tag, filter to versions with "v" prefix, sort them by version, and take the latest
+          git describe --tags --match "v[0-9]*" --abbrev=0
+          VERSION=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Current version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Bump patch version
+        id: bump_version
+        run: |
+          # Strip the "v" and split into major, minor, patch
+          VERSION=${{ env.version }}
+          VERSION_NUMBER=$(echo $VERSION | sed 's/v//')
+          MAJOR=$(echo $VERSION_NUMBER | cut -d. -f1)
+          MINOR=$(echo $VERSION_NUMBER | cut -d. -f2)
+          PATCH=$(echo $VERSION_NUMBER | cut -d. -f3)
+          NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
+          echo "New version: $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Build font
+        run: ./build.sh
+
+      - name: Display structure of created files
+        run: ls -R ./_output
+
+      - name: Prepare name
+        run: mv ./_output/afio-*.zip afio-${{ env.new_version }}.zip
+
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          prerelease: true
+          artifacts: "afio-${{ env.new_version }}.zip"
+          tag: ${{ env.new_version }}-rc
+          removeArtifacts: true
