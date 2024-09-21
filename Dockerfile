@@ -4,7 +4,7 @@ ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=31.6.0
+ARG FONT_VERSION=31.7.0
 
 ################################################################
 
