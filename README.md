@@ -46,7 +46,8 @@ Fonts will be in `_output` dir.
 ```jsonc
 ...
 "editor.fontFamily": "afio",
-"editor.fontWeight": "400",
+"editor.fontLigatures": false,
+"editor.fontWeight": "500",
 "editor.fontSize": 16,
 "editor.lineHeight": 21,
 ...
