@@ -1,14 +1,14 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.14
 
 ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=32.1.0
+ARG FONT_VERSION=33.2.1
 
 ################################################################
 
-FROM node:22-slim AS base_builder
+FROM node:23-slim AS base_builder
 
 ARG TARGETARCH
 
