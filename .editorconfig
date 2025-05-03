@@ -14,5 +14,5 @@ insert_final_newline = true
 [*.y{,a}ml]
 indent_size = 2
 
-[.nix]
+[*.nix]
 indent_size = 2
