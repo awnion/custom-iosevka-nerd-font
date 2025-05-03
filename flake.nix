@@ -11,43 +11,39 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, font_src, ... }@inputs: flake-utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      packages = rec {
-        default = pkgs.stdenv.mkDerivation {
-          name = "afio";
-          buildInputs = with pkgs; [
-            # qt5.qmake
-            # qt5.qtbase
-            curl
-            cacert
-            ttfautohint-nox
-            nodejs_22
-            nodePackages.npm
-            gnutar
+  outputs = { self, nixpkgs, flake-utils, font_src, ... }@inputs:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        packages = rec {
+          src = ./.;
+          npmDeps = pkgs.fetchNpmDeps {
+            hash = "sha256-9SrfnaDpdLR1KL8WQjFSM0Pza1yRm7/YgQ/TimTJm8o=";
+          };
+          default = pkgs.runCommand "afio" {
+            buildInputs = with pkgs; [
+              nodejs_22
+              nodePackages.npm
+              ttfautohint-nox
+              gnutar
+            ];
 
-            # nodePackages.pnpm
-          ];
+            # Set SOURCE_DATE_EPOCH for reproducible builds
+            SOURCE_DATE_EPOCH = "1";
+          } ''
+            workdir=$(mktemp -d)
 
-          src = font_src;
+            echo copy "${font_src}" into workdir
+            cp -r ${font_src}/* $workdir/
 
-          buildPhase = ''
-            cp -v ${./private-build-plans.toml} private-build-plans.toml
-            npm install 2>&1 > /dev/null
-            npm run build -- ttf::afio
-          '';
-          installPhase = ''
-            mkdir -p $out/
-            mkdir -p $out/share
-            cp -r * $out/share/
-            ls -la > $out/ls.txt
-            # cp -avL dist/*/ttf/* $out
+            echo copy private build plans into workdir
+            cp ${src}/private-build-plans.toml $workdir/
+
+            mkdir -p $out/log
+            ls -la ${npmDeps} > $out/log/npm-deps
+            echo "Build completed successfully" > $out/log/build-log
           '';
         };
-      };
-    });
+      });
 }
 
