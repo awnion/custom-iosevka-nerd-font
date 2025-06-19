@@ -8,7 +8,7 @@ ARG FONT_VERSION=33.2.2
 
 ################################################################
 
-FROM node:23-slim AS base_builder
+FROM node:24-slim AS base_builder
 
 ARG TARGETARCH
 
