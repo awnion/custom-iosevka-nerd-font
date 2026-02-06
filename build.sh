@@ -5,12 +5,10 @@ set -e
 export DOCKER_BUILDKIT=1
 
 OUTPUT_DIR=$(pwd)/_output
-IMAGE_TAG=afio_builder
 
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
-echo "Build docker image: $IMAGE_TAG"
-docker buildx build -t "$IMAGE_TAG" \
+docker buildx build \
     --load \
     --iidfile "$OUTPUT_DIR"/iddfile \
     .
