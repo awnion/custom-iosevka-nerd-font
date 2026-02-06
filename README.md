@@ -1,8 +1,8 @@
 # Custom Iosevka Nerd Font
 
 <p float="left">
-  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-dark.png" alt="" height="230px">
-  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/master/docs/imgs/iosevka-custom-light.png" alt="" height="230px">
+  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/main/docs/imgs/iosevka-custom-dark.png" alt="" height="230px">
+  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/main/docs/imgs/iosevka-custom-light.png" alt="" height="230px">
 </p>
 
 ## TODO

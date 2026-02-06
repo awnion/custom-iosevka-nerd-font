@@ -1,10 +1,10 @@
-# syntax=docker/dockerfile:1.9
+# syntax=docker/dockerfile:1.21
 
 ARG BUILD_DIR=/build
 ARG FONT_NAME=afio
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG FONT_VERSION=31.6.0
+ARG FONT_VERSION=34.1.0
 
 ################################################################
 
@@ -19,7 +19,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; \
 RUN \
     --mount=type=cache,id=apt-${TARGETARCH},target=/var/cache/apt \
     --mount=type=cache,id=apt-${TARGETARCH},target=/var/lib/apt \
-<<EOF
+    <<-EOF
     set -e
     apt-get update -yqq
     apt-get install --no-install-recommends -yqq \
@@ -55,9 +55,9 @@ COPY --link private-build-plans.toml .
 COPY --from=iosevka_src /iosevka .
 
 RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/iosevka/node_modules \
-<<-EOF
+    <<-EOF
     set -ex
-    bun i
+    bun install
     bun run build -- ttf::${FONT_NAME}
 EOF
 
