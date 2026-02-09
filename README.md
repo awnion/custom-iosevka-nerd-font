@@ -1,4 +1,4 @@
-# Custom Iosevka Nerd Font
+# AFIO - Custom Iosevka Nerd Font
 
 <p float="left">
   <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/main/docs/imgs/iosevka-custom-dark.png" alt="" height="230px">
@@ -58,3 +58,16 @@ Fonts will be in `_output` dir.
 - Iosevka webpage <https://typeof.net/Iosevka/>
 - Build Iosevka font using docker <https://github.com/ejuarezg/containers/tree/master/iosevka_font#container-method>
 - Nerd Font patcher <https://github.com/ryanoasis/nerd-fonts>
+
+## License
+
+This project is dual-licensed under either:
+
+- MIT License ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+
+at your option.
+
+### Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
