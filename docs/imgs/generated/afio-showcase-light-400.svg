@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1544" height="720" viewBox="0 0 1544 720" role="img" aria-labelledby="title desc" xml:space="preserve">
-  <title id="title">AFIO dark theme showcase</title>
-  <desc id="desc">Dark theme code showcase for JSON, Python, and Rust using the AFIO font.</desc>
+  <title id="title">AFIO light theme showcase</title>
+  <desc id="desc">Light theme code showcase for JSON, Python, and Rust using the AFIO font.</desc>
   <defs>
     <clipPath id="jsonClip">
       <rect x="0" y="78" width="492" height="614" />
@@ -16,29 +16,29 @@
     text {
       font-family: "afio", "AFIO", "afio Nerd Font Mono", "Iosevka Custom", "Iosevka Nerd Font", "Iosevka", monospace;
       font-size: 21px;
-      font-weight: 500;
+      font-weight: 400;
       font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
       font-feature-settings: "calt" 1, "liga" 1, "dlig" 1;
       text-rendering: geometricPrecision;
     }
 
-    .pane-title { fill: #808080; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
-    .line-no { fill: #7f7f7f; opacity: 0.8; }
-    .fg { fill: #a9b7c6; }
-    .comment { fill: #808080; }
-    .key { fill: #bf93d8; }
-    .kw { fill: #db7e32; }
-    .string { fill: #7cb961; }
-    .number { fill: #9cc3ff; }
-    .type { fill: #bf93d8; }
-    .decor { fill: #9cc3ff; }
-    .call { fill: #e5c07b; }
-    .field { fill: #a9b7c6; }
+    .pane-title { fill: #6a737d; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
+    .line-no { fill: #c3c5cb; opacity: 0.8; }
+    .fg { fill: #1a1a00; }
+    .comment { fill: #6a737d; }
+    .key { fill: #d73a49; }
+    .kw { fill: #d73a49; }
+    .string { fill: #22863a; }
+    .number { fill: #005cc5; }
+    .type { fill: #6f42c1; }
+    .decor { fill: #005cc5; }
+    .call { fill: #6f42c1; }
+    .field { fill: #1a1a00; }
   </style>
 
-  <rect width="1544" height="720" fill="#23272c" />
-  <rect x="514" y="0" width="1" height="720" fill="#363a3e" />
-  <rect x="1029" y="0" width="1" height="720" fill="#363a3e" />
+  <rect width="1544" height="720" fill="#ffffff" />
+  <rect x="514" y="0" width="1" height="720" fill="#e3e3e3" />
+  <rect x="1029" y="0" width="1" height="720" fill="#e3e3e3" />
 
   <text class="pane-title" x="54" y="48">JSON</text>
   <text class="pane-title" x="569" y="48">PYTHON</text>
@@ -52,7 +52,7 @@
     <text class="line-no" x="20" y="160">3</text>
     <text x="54" y="160"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="kw">false</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="186">4</text>
-    <text x="54" y="186"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"500"</tspan><tspan class="fg">,</tspan></text>
+    <text x="54" y="186"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"400"</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="212">5</text>
     <text x="54" y="212"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">20</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="238">6</text>

@@ -16,7 +16,7 @@
     text {
       font-family: "afio", "AFIO", "afio Nerd Font Mono", "Iosevka Custom", "Iosevka Nerd Font", "Iosevka", monospace;
       font-size: 21px;
-      font-weight: 500;
+      font-weight: 300;
       font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
       font-feature-settings: "calt" 1, "liga" 1, "dlig" 1;
       text-rendering: geometricPrecision;
@@ -52,7 +52,7 @@
     <text class="line-no" x="20" y="160">3</text>
     <text x="54" y="160"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="kw">false</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="186">4</text>
-    <text x="54" y="186"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"500"</tspan><tspan class="fg">,</tspan></text>
+    <text x="54" y="186"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"300"</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="212">5</text>
     <text x="54" y="212"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">20</tspan><tspan class="fg">,</tspan></text>
     <text class="line-no" x="20" y="238">6</text>
