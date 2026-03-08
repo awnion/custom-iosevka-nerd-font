@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1544" height="720" viewBox="0 0 1544 720" role="img" aria-labelledby="title desc" xml:space="preserve">
-  <title id="title">AFIO light theme showcase</title>
-  <desc id="desc">Light theme code showcase for JSON, Python, and Rust using the AFIO font.</desc>
+  <title id="title">$TITLE$</title>
+  <desc id="desc">$DESC$</desc>
   <defs>
     <clipPath id="jsonClip">
       <rect x="0" y="78" width="492" height="614" />
@@ -22,23 +22,23 @@
       text-rendering: geometricPrecision;
     }
 
-    .pane-title { fill: #6a737d; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
-    .line-no { fill: #c3c5cb; opacity: 0.8; }
-    .fg { fill: #1a1a00; }
-    .comment { fill: #6a737d; }
-    .key { fill: #d73a49; }
-    .kw { fill: #d73a49; }
-    .string { fill: #22863a; }
-    .number { fill: #005cc5; }
-    .type { fill: #6f42c1; }
-    .decor { fill: #005cc5; }
-    .call { fill: #6f42c1; }
-    .field { fill: #1a1a00; }
+    .pane-title { fill: $PANE_TITLE$; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
+    .line-no { fill: $LINE_NO$; opacity: 0.8; }
+    .fg { fill: $FG$; }
+    .comment { fill: $COMMENT$; }
+    .key { fill: $KEY$; }
+    .kw { fill: $KW$; }
+    .string { fill: $STRING$; }
+    .number { fill: $NUMBER$; }
+    .type { fill: $TYPE$; }
+    .decor { fill: $DECOR$; }
+    .call { fill: $CALL$; }
+    .field { fill: $FIELD$; }
   </style>
 
-  <rect width="1544" height="720" fill="#ffffff" />
-  <rect x="514" y="0" width="1" height="720" fill="#e3e3e3" />
-  <rect x="1029" y="0" width="1" height="720" fill="#e3e3e3" />
+  <rect width="1544" height="720" fill="$BG$" />
+  <rect x="514" y="0" width="1" height="720" fill="$SEP$" />
+  <rect x="1029" y="0" width="1" height="720" fill="$SEP$" />
 
   <text class="pane-title" x="54" y="48">JSON</text>
   <text class="pane-title" x="569" y="48">PYTHON</text>

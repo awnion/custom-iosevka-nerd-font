@@ -30,9 +30,45 @@ DEFAULT_UV_CACHE_DIR = ROOT / ".uv-cache"
 DEFAULT_XDG_CACHE_HOME = ROOT / ".cache"
 DEFAULT_XDG_DATA_HOME = ROOT / ".local" / "share"
 
-TEMPLATES = {
-    "light": DEFAULT_TEMPLATE_DIR / "afio-showcase-light.svg",
-    "dark": DEFAULT_TEMPLATE_DIR / "afio-showcase-dark.svg",
+TEMPLATE = DEFAULT_TEMPLATE_DIR / "afio-showcase.svg"
+
+THEMES: dict[str, dict[str, str]] = {
+    "dark": {
+        "TITLE": "AFIO dark theme showcase",
+        "DESC": "Dark theme code showcase for JSON, Python, and Rust using the AFIO font.",
+        "BG": "#23272c",
+        "SEP": "#363a3e",
+        "PANE_TITLE": "#808080",
+        "LINE_NO": "#7f7f7f",
+        "FG": "#a9b7c6",
+        "COMMENT": "#808080",
+        "KEY": "#bf93d8",
+        "KW": "#db7e32",
+        "STRING": "#7cb961",
+        "NUMBER": "#9cc3ff",
+        "TYPE": "#bf93d8",
+        "DECOR": "#9cc3ff",
+        "CALL": "#e5c07b",
+        "FIELD": "#a9b7c6",
+    },
+    "light": {
+        "TITLE": "AFIO light theme showcase",
+        "DESC": "Light theme code showcase for JSON, Python, and Rust using the AFIO font.",
+        "BG": "#ffffff",
+        "SEP": "#e3e3e3",
+        "PANE_TITLE": "#6a737d",
+        "LINE_NO": "#c3c5cb",
+        "FG": "#1a1a00",
+        "COMMENT": "#6a737d",
+        "KEY": "#d73a49",
+        "KW": "#d73a49",
+        "STRING": "#22863a",
+        "NUMBER": "#005cc5",
+        "TYPE": "#6f42c1",
+        "DECOR": "#005cc5",
+        "CALL": "#6f42c1",
+        "FIELD": "#1a1a00",
+    },
 }
 
 
@@ -96,20 +132,13 @@ def load_weights(plan_path: Path, family: str) -> list[WeightSpec]:
     return specs
 
 
-def harden_spaces(svg: str) -> str:
-    """Replace regular spaces with non-breaking spaces inside <text>/<tspan> text content.
-
-    This ensures consistent rendering across all SVG renderers, some of which
-    collapse regular spaces even when xml:space="preserve" is set.
-    """
-    return re.sub(
-        r"(<(?:text|tspan)[^>]*>)([^<]*)",
-        lambda m: m.group(1) + m.group(2).replace(" ", "\u00a0"),
-        svg,
-    )
+def apply_theme(svg: str, theme: dict[str, str]) -> str:
+    for key, value in theme.items():
+        svg = svg.replace(f"${key}$", value)
+    return svg
 
 
-def patch_svg(svg: str, css_weight: int) -> str:
+def patch_weight(svg: str, css_weight: int) -> str:
     svg, style_count = re.subn(
         r"(font-weight:\s*)\d+(;)",
         rf"\g<1>{css_weight}\2",
@@ -175,13 +204,14 @@ def generate_showcase_matrix(
 ) -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
+    template = TEMPLATE.read_text(encoding="utf-8")
 
-    for theme, template_path in TEMPLATES.items():
-        template = template_path.read_text(encoding="utf-8")
+    for theme_name, theme_colors in THEMES.items():
+        themed = apply_theme(template, theme_colors)
         for weight in weights:
-            patched = harden_spaces(patch_svg(template, weight.css))
-            svg_path = output_dir / f"afio-showcase-{theme}-{weight.css}.svg"
-            png_path = output_dir / f"afio-showcase-{theme}-{weight.css}.png"
+            patched = patch_weight(themed, weight.css)
+            svg_path = output_dir / f"afio-showcase-{theme_name}-{weight.css}.svg"
+            png_path = output_dir / f"afio-showcase-{theme_name}-{weight.css}.png"
             svg_path.write_text(patched, encoding="utf-8")
             render_png(svg_path, png_path, png_scale)
             generated.extend([svg_path, png_path])
