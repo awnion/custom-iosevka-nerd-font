@@ -50,26 +50,26 @@ ARG TARGETARCH
 ARG FONT_NAME
 ARG BUILD_DIR
 
-WORKDIR ${BUILD_DIR}/iosevka
-COPY --link private-build-plans.toml .
-COPY --from=iosevka_src /iosevka .
+WORKDIR ${BUILD_DIR}/src/glyphs
+COPY --link nerd/glyphs .
 
-RUN --mount=type=cache,id=node-${TARGETARCH},target=${BUILD_DIR}/iosevka/node_modules \
+WORKDIR ${BUILD_DIR}
+COPY --link nerd/font-patcher .
+COPY --link ./src/docker_run.py .
+RUN chmod +x docker_run.py
+
+WORKDIR ${BUILD_DIR}/iosevka
+COPY --from=iosevka_src /iosevka .
+COPY --link private-build-plans.toml .
+
+RUN --mount=type=cache,id=bun-${TARGETARCH},target=/root/.bun/install/cache \
     <<-EOF
     set -ex
     bun install
     bun run build -- ttf::${FONT_NAME}
 EOF
 
-WORKDIR ${BUILD_DIR}/src/glyphs
-COPY --link nerd/glyphs .
-
 WORKDIR ${BUILD_DIR}
-COPY --link nerd/font-patcher .
-
-WORKDIR ${BUILD_DIR}
-COPY --link ./src/docker_run.py .
-RUN chmod +x docker_run.py
 
 ENV FONT_NAME=${FONT_NAME}
 CMD [ "/bin/bash", "-c", "time ./docker_run.py" ]
