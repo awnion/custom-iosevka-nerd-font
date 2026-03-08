@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1544" height="510" viewBox="0 0 1544 510" role="img" aria-labelledby="title desc" xml:space="preserve">
+  <title id="title">AFIO light theme preview</title>
+  <desc id="desc">Two editor panes showing AFIO font samples in a light theme.</desc>
+  <defs>
+    <clipPath id="leftClip">
+      <rect x="0" y="0" width="989" height="510" />
+    </clipPath>
+    <clipPath id="rightClip">
+      <rect x="0" y="0" width="492" height="510" />
+    </clipPath>
+  </defs>
+  <style>
+    text {
+      font-family: "afio", "AFIO", "Iosevka Custom", "Iosevka Nerd Font", "Iosevka", monospace;
+      font-size: 26px;
+      font-weight: 400;
+      font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+      font-feature-settings: "calt" 1, "liga" 1, "dlig" 1;
+      text-rendering: geometricPrecision;
+      white-space: pre;
+    }
+
+    .fg { fill: #1a1a00; }
+    .comment { fill: #6a737d; }
+    .line-no { fill: #cccccc; }
+    .key { fill: #d73a49; }
+    .string { fill: #22863a; }
+    .number { fill: #005cc5; }
+    .purple { fill: #6f42c1; }
+    .guide { fill: #d1d5da; }
+    .glyph { fill: #6a737d; font-size: 33px; }
+  </style>
+
+  <rect x="0" y="0" width="1544" height="510" fill="#ffffff" />
+  <rect x="962" y="0" width="1" height="510" fill="#e3e3e3" />
+  <rect x="990" y="0" width="2" height="510" fill="#cecece" />
+  <rect x="1139" y="251" width="405" height="42" fill="#eaeff5" />
+  <rect x="1139" y="251" width="120" height="42" fill="#d1d5da" />
+
+  <g clip-path="url(#leftClip)" transform="translate(12 14)">
+    <text x="0" y="18"><tspan class="key">"editor.fontFamily"</tspan><tspan class="fg">: </tspan><tspan class="string">"Iosevka Nerd Font, Iosevka Custom"</tspan></text>
+    <text x="0" y="60"><tspan class="key">"editor.fontSize"</tspan><tspan class="fg">: </tspan><tspan class="number">16</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="102"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="number">true</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="144"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"400"</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="186"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">21</tspan><tspan class="fg">,</tspan></text>
+
+    <text class="comment" x="0" y="228">// Terminal fonts example: [({[]})] iIlL1j $#% wvmga</text>
+    <text class="comment" x="0" y="270">// Delta compression using up to 12 threads</text>
+    <text class="comment" x="0" y="312">// github.com:awnion/myfonts.git</text>
+    <text class="comment" x="0" y="354">// 00123456789 ==&gt; шла маша по шоссе +++ === ≠ ≥ ≤</text>
+    <text class="comment" x="0" y="396">//</text>
+    <text class="glyph" x="54" y="396">◆</text>
+    <text class="glyph" x="128" y="396">◆</text>
+    <text class="glyph" x="204" y="396">╭</text>
+    <text class="comment" x="252" y="396">~/src ❯ master ▶ git remote add origin</text>
+
+    <text class="comment" x="0" y="438">//</text>
+    <text class="glyph" x="91" y="438">◆</text>
+    <text class="glyph" x="204" y="438">╭</text>
+    <text class="comment" x="252" y="438">~/src ❯ master ▶  @</text>
+
+    <text class="comment" x="0" y="480">//</text>
+    <text class="glyph" x="54" y="480">◆</text>
+    <text class="glyph" x="128" y="480">◆</text>
+    <text class="glyph" x="204" y="480">╰</text>
+    <text class="glyph" x="252" y="480">█</text>
+  </g>
+
+  <g clip-path="url(#rightClip)" transform="translate(1052 14)">
+    <text class="line-no" x="0" y="18">18</text>
+    <text x="92" y="18"><tspan class="key">import</tspan><tspan class="fg"> re</tspan></text>
+
+    <text class="line-no" x="0" y="60">19</text>
+    <text x="92" y="60"><tspan class="key">import</tspan><tspan class="fg"> os</tspan></text>
+
+    <text class="line-no" x="0" y="102">20</text>
+    <text x="92" y="102"><tspan class="key">import</tspan><tspan class="fg"> argparse</tspan></text>
+
+    <text class="line-no" x="0" y="144">21</text>
+    <text x="92" y="144"><tspan class="key">from</tspan><tspan class="fg"> argparse </tspan><tspan class="key">import</tspan><tspan class="fg"> RawTextHelpFormatter</tspan></text>
+
+    <text class="line-no" x="0" y="186">22</text>
+    <text x="92" y="186"><tspan class="key">import</tspan><tspan class="fg"> errno</tspan></text>
+
+    <text class="line-no" x="0" y="228">23</text>
+    <text x="92" y="228"><tspan class="key">import</tspan><tspan class="fg"> subprocess</tspan></text>
+
+    <text class="line-no" x="0" y="270">24</text>
+    <text x="92" y="270"><tspan class="key">import</tspan><tspan class="fg"> json</tspan></text>
+
+    <text class="line-no" x="0" y="312">25</text>
+    <text x="92" y="312"><tspan class="key">try</tspan><tspan class="fg">:</tspan></text>
+
+    <text class="line-no" x="0" y="354">26</text>
+    <text class="guide" x="50" y="354">│</text>
+    <text x="92" y="354"><tspan class="key">import</tspan><tspan class="fg"> configparser</tspan></text>
+
+    <text class="line-no" x="0" y="396">27</text>
+    <text x="92" y="396"><tspan class="key">except</tspan><tspan class="number"> ImportError</tspan><tspan class="fg">:</tspan></text>
+
+    <text class="line-no" x="0" y="438">28</text>
+    <text class="guide" x="50" y="438">│</text>
+    <text x="92" y="438"><tspan class="fg">sys.</tspan><tspan class="purple">exit</tspan><tspan class="fg">(projectName + " requires python 3.3+")</tspan></text>
+
+    <text class="line-no" x="0" y="480">29</text>
+    <text x="92" y="480"><tspan class="key">try</tspan><tspan class="fg">:</tspan></text>
+  </g>
+</svg>
