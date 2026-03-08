@@ -1,37 +1,33 @@
-# AFIO - Custom Iosevka Nerd Font
+# AFIO - Custom Iosevka Nerd Font (more examples in the end)
 
 <p float="left">
-  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/main/docs/imgs/iosevka-custom-dark.png" alt="" height="230px">
-  <img src="https://github.com/awnion/custom-iosevka-nerd-font/raw/main/docs/imgs/iosevka-custom-light.png" alt="" height="230px">
+  <img src="docs/imgs/generated/afio-showcase-dark-400.png" alt="AFIO dark theme showcase" height="320px">
+  <img src="docs/imgs/generated/afio-showcase-light-400.png" alt="AFIO light theme showcase" height="320px">
 </p>
 
-## TODO
+## Why AFIO?
 
-- [ ] Update README images and/or ideally generate them every release
-- [ ] Windows friendly fontfamily name (might be already good, just need to test it)
+[Iosevka](https://typeof.net/Iosevka/) is one of the most customizable coding fonts out there — hundreds of glyph variants, adjustable spacing, weight, and width. **BUT** if you want Nerd Font icons (powerline symbols, devicons, file icons), you're stuck with the [prebuilt versions](https://github.com/ryanoasis/nerd-fonts) that ship a few default configurations. No custom glyphs, no weight tuning, no width control — take it or leave it.
 
-## Download
+## AFIO is two things in one
 
-Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) page
+1. **Ready-to-use font** which I use myself. Just grab AFIO from [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) and install. Hand-picked glyph variants, carefully tuned weights, 9000+ Nerd Font icons — all done for you.
 
-## Motivation
+2. **Build-your-own Nerd Font Iosevka template**:
+    - fork this repo
+    - edit `private-build-plans.toml` to your taste
+    - push 🚀
+    - GitHub Actions will build your custom Iosevka + Nerd Font automatically
+    - No local setup needed 🤷
 
-- Iosevka has a lot of modificaions, but Nerd Font repo has only a few of them
-- don't need italic and oblique versions (so can speed up compilation)
-- need only specific font weights (e.g. 200 300 400 500)
-- need to fake bold weight to 500
-- need specific base font width
-- need nerd font icons
-- need oneliner to build everything :)
+## AFIO Key modifications (very opinionated)
 
-## Key modifications
-
-- Changed `m i l % 0` and others
-- Changed font weights (e.g. "bold" has weight 500)
-- No italic and oblique versions by default
-- Base font shape width is `6`
-
-For more options edit: `private-build-plans.toml` and build
+- Custom glyph variants: `f` (flat-hook-serifless), `i` (serifed-asymmetric), `l` (serifed-semi-tailed), `m` (short-leg), `0` (dotted), `9` (open-contour), `*` (hex-low), `%` (dots), `@` (fourfold-solid-inner-tall), tittle (square)
+- Font weights: 300 (light), 400 (regular), 500 (medium), 700 (bold)
+- Bold shape weight is 500 (lighter than default bold)
+- No italic and oblique versions
+- Term spacing, sans serifs
+- Glyph shape width: 540
 
 ## Build it yourself with Docker
 
@@ -71,3 +67,49 @@ at your option.
 ### Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
+
+## Download
+
+Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) page
+
+## TODO
+
+- [ ] Windows friendly fontfamily name (might be already good, just need to test it)
+
+## Examples
+
+### Dark theme showcase
+
+#### 300
+
+![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-300.png)
+
+#### 400
+
+![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-400.png)
+
+#### 500
+
+![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-500.png)
+
+#### 700
+
+![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-700.png)
+
+### Light theme showcase
+
+#### 300
+
+![Light theme showcase](docs/imgs/generated/afio-showcase-light-300.png)
+
+#### 400
+
+![Light theme showcase](docs/imgs/generated/afio-showcase-light-400.png)
+
+#### 500
+
+![Light theme showcase](docs/imgs/generated/afio-showcase-light-500.png)
+
+#### 700
+
+![Light theme showcase](docs/imgs/generated/afio-showcase-light-700.png)
