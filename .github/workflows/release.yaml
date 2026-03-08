@@ -1,10 +1,15 @@
-name: Release "afio" Font
+name: Release
 
 on:
   push:
     branches:
       - main
-      - ci/*
+    tags:
+      - "v[0-9]+.*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -14,32 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Get current version from tags
-        id: get_version
-        run: |
-          # Get the latest tag, filter to versions with "v" prefix, sort them by version, and take the latest
-          git describe --tags --match "v[0-9]*" --abbrev=0
-          VERSION=$(git describe --tags --match "v[0-9]*" --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Current version: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_ENV
-
-      - name: Bump patch version
-        id: bump_version
-        run: |
-          # Strip the "v" and split into major, minor, patch
-          VERSION=${{ env.version }}
-          VERSION_NUMBER=$(echo $VERSION | sed 's/v//')
-          MAJOR=$(echo $VERSION_NUMBER | cut -d. -f1)
-          MINOR=$(echo $VERSION_NUMBER | cut -d. -f2)
-          PATCH=$(echo $VERSION_NUMBER | cut -d. -f3)
-          NEW_VERSION="v$MAJOR.$MINOR.$((PATCH + 1))"
-          echo "New version: $NEW_VERSION"
-          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Build font
         run: ./build.sh
@@ -47,13 +30,116 @@ jobs:
       - name: Display structure of created files
         run: ls -R ./_output
 
-      - name: Prepare name
-        run: mv ./_output/afio-*.zip afio-${{ env.new_version }}.zip
-
-      - uses: ncipollo/release-action@v1
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          allowUpdates: true
+          name: font-build
+          path: ./_output/afio-*.zip
+
+  pre-release:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: font-build
+
+      - name: Prepare artifact
+        run: mv afio-*.zip afio-latest.zip
+
+      - name: Create or update latest pre-release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          name: Latest build
           prerelease: true
-          artifacts: "afio-${{ env.new_version }}.zip"
-          tag: ${{ env.new_version }}-rc
+          allowUpdates: true
           removeArtifacts: true
+          artifacts: afio-latest.zip
+          body: |
+            ## Install latest build
+
+            ### Download
+
+            ```bash
+            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
+            ```
+
+            ### Install (macOS)
+
+            ```bash
+            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
+            unzip -o afio-latest.zip -d ~/Library/Fonts/
+            ```
+
+            ### Install (Linux)
+
+            ```bash
+            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
+            mkdir -p ~/.local/share/fonts
+            unzip -o afio-latest.zip -d ~/.local/share/fonts/
+            fc-cache -fv
+            ```
+
+            ---
+
+            > This is an automated pre-release from the latest commit on `main`.
+            > For stable versions, see [tagged releases](https://github.com/${{ github.repository }}/releases).
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: font-build
+
+      - name: Prepare artifact
+        run: mv afio-*.zip afio-${{ github.ref_name }}.zip
+
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          PREV_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 "${{ github.ref_name }}"^ 2>/dev/null || echo "")
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          if [ -n "${{ steps.prev_tag.outputs.tag }}" ]; then
+            LOG=$(git log --pretty=format:"- %s (%h)" "${{ steps.prev_tag.outputs.tag }}".."${{ github.ref_name }}")
+          else
+            LOG=$(git log --pretty=format:"- %s (%h)")
+          fi
+          {
+            echo "log<<EOF"
+            echo "$LOG"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          prerelease: false
+          artifacts: afio-${{ github.ref_name }}.zip
+          body: |
+            ## What's changed
+
+            ${{ steps.changelog.outputs.log }}
