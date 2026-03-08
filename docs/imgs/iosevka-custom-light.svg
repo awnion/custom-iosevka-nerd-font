@@ -38,26 +38,26 @@
   <rect x="1139" y="251" width="120" height="42" fill="#d1d5da" />
 
   <g clip-path="url(#leftClip)" transform="translate(12 14)">
-    <text x="0" y="18"><tspan class="key">"editor.fontFamily"</tspan><tspan class="fg">: </tspan><tspan class="string">"Iosevka Nerd Font, Iosevka Custom"</tspan></text>
-    <text x="0" y="60"><tspan class="key">"editor.fontSize"</tspan><tspan class="fg">: </tspan><tspan class="number">16</tspan><tspan class="fg">,</tspan></text>
-    <text x="0" y="102"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="number">true</tspan><tspan class="fg">,</tspan></text>
-    <text x="0" y="144"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"400"</tspan><tspan class="fg">,</tspan></text>
-    <text x="0" y="186"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">21</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="18"><tspan class="key">"editor.fontFamily"</tspan><tspan class="fg">: </tspan><tspan class="string">"Iosevka Nerd Font, Iosevka Custom"</tspan></text>
+    <text x="0" y="60"><tspan class="key">"editor.fontSize"</tspan><tspan class="fg">: </tspan><tspan class="number">16</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="102"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="number">true</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="144"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"400"</tspan><tspan class="fg">,</tspan></text>
+    <text x="0" y="186"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">21</tspan><tspan class="fg">,</tspan></text>
 
-    <text class="comment" x="0" y="228">// Terminal fonts example: [({[]})] iIlL1j $#% wvmga</text>
-    <text class="comment" x="0" y="270">// Delta compression using up to 12 threads</text>
-    <text class="comment" x="0" y="312">// github.com:awnion/myfonts.git</text>
-    <text class="comment" x="0" y="354">// 00123456789 ==&gt; шла маша по шоссе +++ === ≠ ≥ ≤</text>
+    <text class="comment" x="0" y="228">// Terminal fonts example: [({[]})] iIlL1j $#% wvmga</text>
+    <text class="comment" x="0" y="270">// Delta compression using up to 12 threads</text>
+    <text class="comment" x="0" y="312">// github.com:awnion/myfonts.git</text>
+    <text class="comment" x="0" y="354">// 00123456789 ==&gt; шла маша по шоссе +++ === ≠ ≥ ≤</text>
     <text class="comment" x="0" y="396">//</text>
     <text class="glyph" x="54" y="396">◆</text>
     <text class="glyph" x="128" y="396">◆</text>
     <text class="glyph" x="204" y="396">╭</text>
-    <text class="comment" x="252" y="396">~/src ❯ master ▶ git remote add origin</text>
+    <text class="comment" x="252" y="396">~/src ❯ master ▶ git remote add origin</text>
 
     <text class="comment" x="0" y="438">//</text>
     <text class="glyph" x="91" y="438">◆</text>
     <text class="glyph" x="204" y="438">╭</text>
-    <text class="comment" x="252" y="438">~/src ❯ master ▶  @</text>
+    <text class="comment" x="252" y="438">~/src ❯ master ▶  @</text>
 
     <text class="comment" x="0" y="480">//</text>
     <text class="glyph" x="54" y="480">◆</text>
@@ -68,39 +68,39 @@
 
   <g clip-path="url(#rightClip)" transform="translate(1052 14)">
     <text class="line-no" x="0" y="18">18</text>
-    <text x="92" y="18"><tspan class="key">import</tspan><tspan class="fg"> re</tspan></text>
+    <text x="92" y="18"><tspan class="key">import</tspan><tspan class="fg"> re</tspan></text>
 
     <text class="line-no" x="0" y="60">19</text>
-    <text x="92" y="60"><tspan class="key">import</tspan><tspan class="fg"> os</tspan></text>
+    <text x="92" y="60"><tspan class="key">import</tspan><tspan class="fg"> os</tspan></text>
 
     <text class="line-no" x="0" y="102">20</text>
-    <text x="92" y="102"><tspan class="key">import</tspan><tspan class="fg"> argparse</tspan></text>
+    <text x="92" y="102"><tspan class="key">import</tspan><tspan class="fg"> argparse</tspan></text>
 
     <text class="line-no" x="0" y="144">21</text>
-    <text x="92" y="144"><tspan class="key">from</tspan><tspan class="fg"> argparse </tspan><tspan class="key">import</tspan><tspan class="fg"> RawTextHelpFormatter</tspan></text>
+    <text x="92" y="144"><tspan class="key">from</tspan><tspan class="fg"> argparse </tspan><tspan class="key">import</tspan><tspan class="fg"> RawTextHelpFormatter</tspan></text>
 
     <text class="line-no" x="0" y="186">22</text>
-    <text x="92" y="186"><tspan class="key">import</tspan><tspan class="fg"> errno</tspan></text>
+    <text x="92" y="186"><tspan class="key">import</tspan><tspan class="fg"> errno</tspan></text>
 
     <text class="line-no" x="0" y="228">23</text>
-    <text x="92" y="228"><tspan class="key">import</tspan><tspan class="fg"> subprocess</tspan></text>
+    <text x="92" y="228"><tspan class="key">import</tspan><tspan class="fg"> subprocess</tspan></text>
 
     <text class="line-no" x="0" y="270">24</text>
-    <text x="92" y="270"><tspan class="key">import</tspan><tspan class="fg"> json</tspan></text>
+    <text x="92" y="270"><tspan class="key">import</tspan><tspan class="fg"> json</tspan></text>
 
     <text class="line-no" x="0" y="312">25</text>
     <text x="92" y="312"><tspan class="key">try</tspan><tspan class="fg">:</tspan></text>
 
     <text class="line-no" x="0" y="354">26</text>
     <text class="guide" x="50" y="354">│</text>
-    <text x="92" y="354"><tspan class="key">import</tspan><tspan class="fg"> configparser</tspan></text>
+    <text x="92" y="354"><tspan class="key">import</tspan><tspan class="fg"> configparser</tspan></text>
 
     <text class="line-no" x="0" y="396">27</text>
-    <text x="92" y="396"><tspan class="key">except</tspan><tspan class="number"> ImportError</tspan><tspan class="fg">:</tspan></text>
+    <text x="92" y="396"><tspan class="key">except</tspan><tspan class="number"> ImportError</tspan><tspan class="fg">:</tspan></text>
 
     <text class="line-no" x="0" y="438">28</text>
     <text class="guide" x="50" y="438">│</text>
-    <text x="92" y="438"><tspan class="fg">sys.</tspan><tspan class="purple">exit</tspan><tspan class="fg">(projectName + " requires python 3.3+")</tspan></text>
+    <text x="92" y="438"><tspan class="fg">sys.</tspan><tspan class="purple">exit</tspan><tspan class="fg">(projectName + " requires python 3.3+")</tspan></text>
 
     <text class="line-no" x="0" y="480">29</text>
     <text x="92" y="480"><tspan class="key">try</tspan><tspan class="fg">:</tspan></text>

@@ -96,6 +96,19 @@ def load_weights(plan_path: Path, family: str) -> list[WeightSpec]:
     return specs
 
 
+def harden_spaces(svg: str) -> str:
+    """Replace regular spaces with non-breaking spaces inside <text>/<tspan> text content.
+
+    This ensures consistent rendering across all SVG renderers, some of which
+    collapse regular spaces even when xml:space="preserve" is set.
+    """
+    return re.sub(
+        r"(<(?:text|tspan)[^>]*>)([^<]*)",
+        lambda m: m.group(1) + m.group(2).replace(" ", "\u00a0"),
+        svg,
+    )
+
+
 def patch_svg(svg: str, css_weight: int) -> str:
     svg, style_count = re.subn(
         r"(font-weight:\s*)\d+(;)",
@@ -107,7 +120,7 @@ def patch_svg(svg: str, css_weight: int) -> str:
         raise ValueError("Could not patch the top-level font-weight in the SVG template")
 
     svg, text_count = re.subn(
-        r'("editor\.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">")\d+(")',
+        r'("editor\.fontWeight"</tspan><tspan class="fg">:\xa0</tspan><tspan class="string">")\d+(")',
         rf"\g<1>{css_weight}\2",
         svg,
         count=1,
@@ -166,7 +179,7 @@ def generate_showcase_matrix(
     for theme, template_path in TEMPLATES.items():
         template = template_path.read_text(encoding="utf-8")
         for weight in weights:
-            patched = patch_svg(template, weight.css)
+            patched = harden_spaces(patch_svg(template, weight.css))
             svg_path = output_dir / f"afio-showcase-{theme}-{weight.css}.svg"
             png_path = output_dir / f"afio-showcase-{theme}-{weight.css}.png"
             svg_path.write_text(patched, encoding="utf-8")
