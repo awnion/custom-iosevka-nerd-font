@@ -1,26 +1,33 @@
-# AFIO - Custom Iosevka Nerd Font (more examples in the end)
+# AFIO - Custom Iosevka Nerd Font
 
 <p float="left">
   <img src="docs/imgs/generated/afio-showcase-dark-400.png" alt="AFIO dark theme showcase" height="320px">
   <img src="docs/imgs/generated/afio-showcase-light-400.png" alt="AFIO light theme showcase" height="320px">
 </p>
 
+> More weight examples at the [bottom of this page](#examples)
+
 ## Why AFIO?
 
 [Iosevka](https://typeof.net/Iosevka/) is one of the most customizable coding fonts out there — hundreds of glyph variants, adjustable spacing, weight, and width. **BUT** if you want Nerd Font icons (powerline symbols, devicons, file icons), you're stuck with the [prebuilt versions](https://github.com/ryanoasis/nerd-fonts) that ship a few default configurations. No custom glyphs, no weight tuning, no width control — take it or leave it.
 
-## AFIO is two things in one
+This repo is two things in one:
 
-1. **Ready-to-use font** which I use myself. Just grab AFIO from [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) and install. Hand-picked glyph variants, carefully tuned weights, 9000+ Nerd Font icons — all done for you.
+1. **AFIO — a ready-to-use font.** Just grab it from [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) and install. Hand-picked glyph variants, carefully tuned weights, 9000+ Nerd Font icons — all done for you. Details: [Use AFIO as-is](#use-afio)
 
-2. **Build-your-own Nerd Font Iosevka template**:
-    - fork this repo
-    - edit `private-build-plans.toml` to your taste
-    - push 🚀
-    - GitHub Actions will build your custom Iosevka + Nerd Font automatically
-    - No local setup needed 🤷
+2. **A template for building your own custom Iosevka + Nerd Font.** Fork this repo, edit `private-build-plans.toml` to your taste, push 🚀 — GitHub Actions will build and release your font automatically. No local setup needed 🤷 Details: [Build your own](#build-your-own)
 
-## AFIO Key modifications (very opinionated)
+---
+
+<a id="use-afio"></a>
+
+## Use AFIO as-is
+
+### Download
+
+Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases).
+
+### What's inside (very opinionated)
 
 - Custom glyph variants: `f` (flat-hook-serifless), `i` (serifed-asymmetric), `l` (serifed-semi-tailed), `m` (short-leg), `0` (dotted), `9` (open-contour), `*` (hex-low), `%` (dots), `@` (fourfold-solid-inner-tall), tittle (square)
 - Font weights: 300 (light), 400 (regular), 500 (medium), 700 (bold)
@@ -28,14 +35,6 @@
 - No italic and oblique versions
 - Term spacing, sans serifs
 - Glyph shape width: 540
-
-## Build it yourself with Docker
-
-```bash
-./build.sh
-```
-
-Fonts will be in `_output` dir.
 
 ### vscode settings.json
 
@@ -48,6 +47,28 @@ Fonts will be in `_output` dir.
 "editor.lineHeight": 21,
 ...
 ```
+
+---
+
+<a id="build-your-own"></a>
+
+## Build your own
+
+### Option A: Fork + GitHub Actions (easiest)
+
+1. Fork this repo
+2. Edit `private-build-plans.toml` ([Iosevka customizer](https://typeof.net/Iosevka/customizer) can help)
+3. Push — GitHub Actions builds and releases your font automatically
+
+### Option B: Local Docker build
+
+```bash
+./build.sh
+```
+
+Fonts will be in `_output` dir.
+
+---
 
 ## Links
 
@@ -67,10 +88,6 @@ at your option.
 ### Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this project by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
-
-## Download
-
-Check [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases) page
 
 ## TODO
 
