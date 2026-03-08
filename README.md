@@ -1,9 +1,6 @@
 # AFIO - Custom Iosevka Nerd Font
 
-<p float="left">
-  <img src="docs/imgs/generated/afio-showcase-dark-400.png" alt="AFIO dark theme showcase" height="320px">
-  <img src="docs/imgs/generated/afio-showcase-light-400.png" alt="AFIO light theme showcase" height="320px">
-</p>
+![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-400.png)
 
 > More weight examples at the [bottom of this page](#examples)
 
