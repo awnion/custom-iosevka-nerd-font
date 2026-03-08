@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1544" height="720" viewBox="0 0 1544 720" role="img" aria-labelledby="title desc" xml:space="preserve">
+  <title id="title">AFIO dark theme showcase</title>
+  <desc id="desc">Dark theme code showcase for JSON, Python, and Rust using the AFIO font.</desc>
+  <defs>
+    <clipPath id="jsonClip">
+      <rect x="54" y="78" width="438" height="614" />
+    </clipPath>
+    <clipPath id="pyClip">
+      <rect x="569" y="78" width="438" height="614" />
+    </clipPath>
+    <clipPath id="rsClip">
+      <rect x="1084" y="78" width="438" height="614" />
+    </clipPath>
+  </defs>
+  <style>
+    text {
+      font-family: "afio", "AFIO", "afio Nerd Font Mono", "Iosevka Custom", "Iosevka Nerd Font", "Iosevka", monospace;
+      font-size: 21px;
+      font-weight: 500;
+      font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+      font-feature-settings: "calt" 1, "liga" 1, "dlig" 1;
+      text-rendering: geometricPrecision;
+    }
+
+    .pane-title { fill: #808080; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; }
+    .line-no { fill: #7f7f7f; }
+    .fg { fill: #a9b7c6; }
+    .comment { fill: #808080; }
+    .key { fill: #bf93d8; }
+    .kw { fill: #db7e32; }
+    .string { fill: #7cb961; }
+    .number { fill: #9cc3ff; }
+    .type { fill: #bf93d8; }
+    .decor { fill: #9cc3ff; }
+    .call { fill: #e5c07b; }
+    .field { fill: #a9b7c6; }
+  </style>
+
+  <rect width="1544" height="720" fill="#23272c" />
+  <rect x="514" y="0" width="1" height="720" fill="#363a3e" />
+  <rect x="1029" y="0" width="1" height="720" fill="#363a3e" />
+
+  <text class="pane-title" x="54" y="48">JSON</text>
+  <text class="pane-title" x="569" y="48">PYTHON</text>
+  <text class="pane-title" x="1084" y="48">RUST</text>
+
+  <g clip-path="url(#jsonClip)" transform="translate(0 -28)">
+    <text class="line-no" x="20" y="108">1</text>
+    <text x="54" y="108"><tspan class="key">"editor.fontFamily"</tspan><tspan class="fg">: </tspan><tspan class="string">"afio, afio Nerd Font Mono, Iosevka Custom, Monaco, Consolas, Hack"</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="134">2</text>
+    <text x="54" y="134"><tspan class="key">"editor.fontSize"</tspan><tspan class="fg">: </tspan><tspan class="number">16</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="160">3</text>
+    <text x="54" y="160"><tspan class="key">"editor.fontLigatures"</tspan><tspan class="fg">: </tspan><tspan class="kw">false</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="186">4</text>
+    <text x="54" y="186"><tspan class="key">"editor.fontWeight"</tspan><tspan class="fg">: </tspan><tspan class="string">"500"</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="212">5</text>
+    <text x="54" y="212"><tspan class="key">"editor.lineHeight"</tspan><tspan class="fg">: </tspan><tspan class="number">20</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="238">6</text>
+    <text x="54" y="238"><tspan class="key">"editor.cursorSurroundingLines"</tspan><tspan class="fg">: </tspan><tspan class="number">5</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="20" y="264">7</text>
+    <text class="comment" x="54" y="264">// Terminal fonts example: [({[]})] iIlL1j $#% wvmga 69</text>
+    <text class="line-no" x="20" y="290">8</text>
+    <text class="comment" x="54" y="290">// Delta compression using up to 12 threads</text>
+    <text class="line-no" x="20" y="316">9</text>
+    <text class="comment" x="54" y="316">// git@github.com:awnion/custom-iosevka-nerd-font.git</text>
+    <text class="line-no" x="9" y="342">10</text>
+    <text class="comment" x="54" y="342">// 00123456789 ==&gt; шла маша по шоссе +++ === != &gt;= &lt;=</text>
+    <text class="line-no" x="9" y="368">11</text>
+    <text class="comment" x="54" y="368">//     ╭─ ~/src ██ master █ git remote add origin git@github.com:awnion/myfonts.git</text>
+    <text class="line-no" x="9" y="394">12</text>
+    <text class="comment" x="54" y="394">//       ╭─ ~/src  master █ </text>
+    <text class="line-no" x="9" y="420">13</text>
+    <text class="comment" x="54" y="420">//     ╰─ █              █</text>
+    <text class="line-no" x="9" y="446">14</text>
+    <text class="comment" x="54" y="446">// =</text>
+    <text class="line-no" x="9" y="472">15</text>
+    <text class="comment" x="54" y="472">//  =</text>
+    <text class="line-no" x="9" y="498">16</text>
+    <text class="comment" x="54" y="498">//  "  (uv-env) 100%</text>
+    <text class="line-no" x="9" y="524">17</text>
+    <text class="comment" x="54" y="524">//  main   zsh   build  release</text>
+    <text class="line-no" x="9" y="550">18</text>
+    <text class="comment" x="54" y="550">//  README.md   src/lib.rs   ./dist</text>
+    <text class="line-no" x="9" y="576">19</text>
+    <text class="comment" x="54" y="576">// +++ === != >= </text>
+    <text class="line-no" x="9" y="602">20</text>
+    <text class="comment" x="54" y="602">// [({[]})] iIlL1j $#% wvmga 69</text>
+  </g>
+
+  <g clip-path="url(#pyClip)" transform="translate(0 -28)">
+    <text class="line-no" x="535" y="108">1</text>
+    <text x="569" y="108"><tspan class="kw">from</tspan><tspan class="fg"> __future__ </tspan><tspan class="kw">import</tspan><tspan class="fg"> annotations</tspan></text>
+    <text class="line-no" x="535" y="142">2</text>
+    <text x="569" y="142"><tspan class="kw">import</tspan><tspan class="fg"> asyncio</tspan></text>
+    <text class="line-no" x="535" y="176">3</text>
+    <text x="569" y="176"><tspan class="kw">from</tspan><tspan class="fg"> dataclasses </tspan><tspan class="kw">import</tspan><tspan class="fg"> dataclass</tspan></text>
+    <text class="line-no" x="535" y="210">4</text>
+    <text x="569" y="210"><tspan class="kw">from</tspan><tspan class="fg"> pathlib </tspan><tspan class="kw">import</tspan><tspan class="fg"> Path</tspan></text>
+    <text class="line-no" x="535" y="244">5</text>
+    <text class="line-no" x="535" y="278">6</text>
+    <text x="569" y="278"><tspan class="decor">@dataclass</tspan><tspan class="fg">(slots=</tspan><tspan class="kw">True</tspan><tspan class="fg">)</tspan></text>
+    <text class="line-no" x="535" y="312">7</text>
+    <text x="569" y="312"><tspan class="kw">class</tspan><tspan class="type"> FontPreview</tspan><tspan class="fg">:</tspan></text>
+    <text class="line-no" x="535" y="346">8</text>
+    <text x="569" y="346"><tspan class="fg">    family: </tspan><tspan class="type">str</tspan></text>
+    <text class="line-no" x="535" y="380">9</text>
+    <text x="569" y="380"><tspan class="fg">    size: </tspan><tspan class="type">int</tspan><tspan class="fg"> = </tspan><tspan class="number">16</tspan></text>
+    <text class="line-no" x="524" y="414">10</text>
+    <text class="line-no" x="524" y="448">11</text>
+    <text x="569" y="448"><tspan class="kw">async def</tspan><tspan class="call"> render</tspan><tspan class="fg">(font: </tspan><tspan class="type">FontPreview</tspan><tspan class="fg">, text: </tspan><tspan class="type">str</tspan><tspan class="fg">) -&gt; </tspan><tspan class="type">dict</tspan><tspan class="fg">[</tspan><tspan class="type">str</tspan><tspan class="fg">, </tspan><tspan class="type">int</tspan><tspan class="fg">]:</tspan></text>
+    <text class="line-no" x="524" y="482">12</text>
+    <text x="569" y="482"><tspan class="string">    """Render metrics and spacing hints for the preview."""</tspan></text>
+    <text class="line-no" x="524" y="516">13</text>
+    <text x="569" y="516"><tspan class="fg">    widths = {op: len(op) </tspan><tspan class="kw">for</tspan><tspan class="fg"> op </tspan><tspan class="kw">in</tspan><tspan class="string"> ["!=", "&gt;=", "&lt;=", "==&gt;"]</tspan><tspan class="fg">}</tspan></text>
+    <text class="line-no" x="524" y="550">14</text>
+    <text x="569" y="550"><tspan class="fg">    </tspan><tspan class="kw">if</tspan><tspan class="fg"> missing := [c </tspan><tspan class="kw">for</tspan><tspan class="fg"> c </tspan><tspan class="kw">in</tspan><tspan class="fg"> text </tspan><tspan class="kw">if</tspan><tspan class="fg"> c.isspace()]:</tspan></text>
+    <text class="line-no" x="524" y="584">15</text>
+    <text x="569" y="584"><tspan class="fg">        </tspan><tspan class="kw">return</tspan><tspan class="fg"> {</tspan><tspan class="string">"lines"</tspan><tspan class="fg">: text.count(</tspan><tspan class="string">"\n"</tspan><tspan class="fg">) + </tspan><tspan class="number">1</tspan><tspan class="fg">, </tspan><tspan class="string">"spaces"</tspan><tspan class="fg">: len(missing)}</tspan></text>
+    <text class="line-no" x="524" y="618">16</text>
+    <text x="569" y="618"><tspan class="fg">    </tspan><tspan class="kw">match</tspan><tspan class="fg"> font.size:</tspan></text>
+    <text class="line-no" x="524" y="652">17</text>
+    <text x="569" y="652"><tspan class="fg">        </tspan><tspan class="kw">case</tspan><tspan class="number"> 16</tspan><tspan class="fg"> | </tspan><tspan class="number">18</tspan><tspan class="fg">: </tspan><tspan class="kw">return</tspan><tspan class="fg"> {</tspan><tspan class="string">"pixels"</tspan><tspan class="fg">: len(text) * font.size}</tspan></text>
+    <text class="line-no" x="524" y="686">18</text>
+    <text x="569" y="686"><tspan class="fg">        </tspan><tspan class="kw">case</tspan><tspan class="fg"> _: </tspan><tspan class="kw">raise</tspan><tspan class="fg"> </tspan><tspan class="type">ValueError</tspan><tspan class="fg">(</tspan><tspan class="string">f"unsupported size: {font.size}"</tspan><tspan class="fg">)</tspan></text>
+  </g>
+
+  <g clip-path="url(#rsClip)" transform="translate(0 -28)">
+    <text class="line-no" x="1050" y="108">1</text>
+    <text x="1084" y="108"><tspan class="kw">use</tspan><tspan class="fg"> anyhow::{</tspan><tspan class="type">Context</tspan><tspan class="fg">, </tspan><tspan class="type">Result</tspan><tspan class="fg">};</tspan></text>
+    <text class="line-no" x="1050" y="142">2</text>
+    <text x="1084" y="142"><tspan class="kw">use</tspan><tspan class="fg"> serde::{</tspan><tspan class="type">Deserialize</tspan><tspan class="fg">, </tspan><tspan class="type">Serialize</tspan><tspan class="fg">};</tspan></text>
+    <text class="line-no" x="1050" y="176">3</text>
+    <text x="1084" y="176"><tspan class="kw">use</tspan><tspan class="fg"> std::{collections::</tspan><tspan class="type">BTreeMap</tspan><tspan class="fg">, path::</tspan><tspan class="type">PathBuf</tspan><tspan class="fg">};</tspan></text>
+    <text class="line-no" x="1050" y="210">4</text>
+    <text class="line-no" x="1050" y="244">5</text>
+    <text x="1084" y="244"><tspan class="decor">#[derive(</tspan><tspan class="type">Debug</tspan><tspan class="decor">, </tspan><tspan class="type">Clone</tspan><tspan class="decor">, </tspan><tspan class="type">Serialize</tspan><tspan class="decor">, </tspan><tspan class="type">Deserialize</tspan><tspan class="decor">)]</tspan></text>
+    <text class="line-no" x="1050" y="278">6</text>
+    <text x="1084" y="278"><tspan class="kw">pub struct</tspan><tspan class="type"> FontPreview</tspan><tspan class="fg">&lt;'a&gt; {</tspan></text>
+    <text class="line-no" x="1050" y="312">7</text>
+    <text x="1084" y="312"><tspan class="fg">    </tspan><tspan class="kw">pub</tspan><tspan class="field"> family</tspan><tspan class="fg">: &amp;'a </tspan><tspan class="type">str</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="1050" y="346">8</text>
+    <text x="1084" y="346"><tspan class="fg">    </tspan><tspan class="kw">pub</tspan><tspan class="field"> size</tspan><tspan class="fg">: </tspan><tspan class="type">u16</tspan><tspan class="fg">,</tspan></text>
+    <text class="line-no" x="1050" y="380">9</text>
+    <text x="1084" y="380"><tspan class="fg">}</tspan></text>
+    <text class="line-no" x="1050" y="414">10</text>
+    <text class="line-no" x="1039" y="448">11</text>
+    <text x="1084" y="448"><tspan class="comment">/// Render preview metrics for ligatures and spacing.</tspan></text>
+    <text class="line-no" x="1039" y="482">12</text>
+    <text x="1084" y="482"><tspan class="kw">pub fn</tspan><tspan class="call"> render</tspan><tspan class="fg">(font: &amp;</tspan><tspan class="type">FontPreview</tspan><tspan class="fg">&lt;'_&gt;, text: &amp;</tspan><tspan class="type">str</tspan><tspan class="fg">) -&gt; </tspan><tspan class="type">Result</tspan><tspan class="fg">&lt;</tspan><tspan class="type">BTreeMap</tspan><tspan class="fg">&lt;&amp;'static str, usize&gt;&gt; {</tspan></text>
+    <text class="line-no" x="1039" y="516">13</text>
+    <text x="1084" y="516"><tspan class="fg">    </tspan><tspan class="kw">let</tspan><tspan class="fg"> widths = [</tspan><tspan class="string">"!="</tspan><tspan class="fg">, </tspan><tspan class="string">"&gt;="</tspan><tspan class="fg">, </tspan><tspan class="string">"&lt;="</tspan><tspan class="fg">, </tspan><tspan class="string">"==&gt;"</tspan><tspan class="fg">]</tspan></text>
+    <text class="line-no" x="1039" y="550">14</text>
+    <text x="1084" y="550"><tspan class="fg">        .into_iter().map(|op| (op, op.chars().count())).collect::&lt;</tspan><tspan class="type">BTreeMap</tspan><tspan class="fg">&lt;_, _&gt;&gt;();</tspan></text>
+    <text class="line-no" x="1039" y="584">15</text>
+    <text x="1084" y="584"><tspan class="fg">    </tspan><tspan class="kw">Ok</tspan><tspan class="fg">(</tspan><tspan class="type">BTreeMap</tspan><tspan class="fg">::from([</tspan></text>
+    <text class="line-no" x="1039" y="618">16</text>
+    <text x="1084" y="618"><tspan class="fg">        (</tspan><tspan class="string">"pixels"</tspan><tspan class="fg">, text.chars().count() * usize::from(font.size)),</tspan></text>
+    <text class="line-no" x="1039" y="652">17</text>
+    <text x="1084" y="652"><tspan class="fg">        (</tspan><tspan class="string">"ops"</tspan><tspan class="fg">, widths.get(</tspan><tspan class="string">"==&gt;"</tspan><tspan class="fg">).copied().</tspan><tspan class="call">context</tspan><tspan class="fg">(</tspan><tspan class="string">"missing ligature"</tspan><tspan class="fg">)?),</tspan></text>
+    <text class="line-no" x="1039" y="686">18</text>
+    <text x="1084" y="686"><tspan class="fg">    ]))</tspan></text>
+    <text class="line-no" x="1039" y="720">19</text>
+    <text x="1084" y="720"><tspan class="fg">}</tspan></text>
+  </g>
+</svg>
