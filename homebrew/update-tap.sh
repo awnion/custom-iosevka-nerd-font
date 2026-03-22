@@ -35,7 +35,7 @@ mkdir -p "$TMPDIR/homebrew-tap/Casks"
 sed \
   -e "s/@@VERSION@@/${VERSION}/" \
   -e "s/@@SHA256@@/${SHA256}/" \
-  "$SCRIPT_DIR/font-afio.rb.template" > "$TMPDIR/homebrew-tap/Casks/font-afio.rb"
+  "$SCRIPT_DIR/font-afio.template.rb" > "$TMPDIR/homebrew-tap/Casks/font-afio.rb"
 
 cd "$TMPDIR/homebrew-tap"
 git add Casks/font-afio.rb
