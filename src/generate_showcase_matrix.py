@@ -2,17 +2,20 @@
 """Generate light/dark showcase SVG matrices for every configured AFIO weight.
 
 Usage:
-    uv run src/generate_showcase_matrix.py
+    python3 src/generate_showcase_matrix.py
 
 Optional arguments:
-    uv run src/generate_showcase_matrix.py --output-dir docs/imgs/generated
-    uv run src/generate_showcase_matrix.py --plan private-build-plans.toml --family afio
-    uv run src/generate_showcase_matrix.py --png-scale 2
+    python3 src/generate_showcase_matrix.py --output-dir docs/imgs/generated
+    python3 src/generate_showcase_matrix.py --plan private-build-plans.toml --family afio
+    python3 src/generate_showcase_matrix.py --png-scale 2
+
+Requires: rsvg-convert (librsvg)
+    macOS: brew install librsvg
+    Ubuntu: apt-get install librsvg2-bin
 """
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import shutil
 import subprocess
@@ -26,9 +29,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PLAN = ROOT / "private-build-plans.toml"
 DEFAULT_TEMPLATE_DIR = ROOT / "docs" / "imgs"
 DEFAULT_OUTPUT_DIR = DEFAULT_TEMPLATE_DIR / "generated"
-DEFAULT_UV_CACHE_DIR = ROOT / ".uv-cache"
-DEFAULT_XDG_CACHE_HOME = ROOT / ".cache"
-DEFAULT_XDG_DATA_HOME = ROOT / ".local" / "share"
 
 TEMPLATE = DEFAULT_TEMPLATE_DIR / "afio-showcase.svg"
 
@@ -162,38 +162,15 @@ def patch_weight(svg: str, css_weight: int) -> str:
 
 def render_png(svg_path: Path, png_path: Path, scale: float) -> None:
     rsvg_convert = shutil.which("rsvg-convert")
-    if rsvg_convert:
-        subprocess.run(
-            [
-                rsvg_convert,
-                "--zoom",
-                str(scale),
-                str(svg_path),
-                "-o",
-                str(png_path),
-            ],
-            check=True,
+    if not rsvg_convert:
+        raise SystemExit(
+            "rsvg-convert not found. Install librsvg:\n"
+            "  macOS: brew install librsvg\n"
+            "  Ubuntu: apt-get install librsvg2-bin"
         )
-        return
-
-    env = os.environ.copy()
-    env.setdefault("UV_CACHE_DIR", str(DEFAULT_UV_CACHE_DIR))
-    env.setdefault("XDG_CACHE_HOME", str(DEFAULT_XDG_CACHE_HOME))
-    env.setdefault("XDG_DATA_HOME", str(DEFAULT_XDG_DATA_HOME))
     subprocess.run(
-        [
-            "uvx",
-            "--from",
-            "cairosvg",
-            "cairosvg",
-            "-s",
-            str(scale),
-            str(svg_path),
-            "-o",
-            str(png_path),
-        ],
+        [rsvg_convert, "--zoom", str(scale), str(svg_path), "-o", str(png_path)],
         check=True,
-        env=env,
     )
 
 
