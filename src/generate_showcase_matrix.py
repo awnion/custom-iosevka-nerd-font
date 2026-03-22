@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """Generate light/dark showcase SVG matrices for every configured AFIO weight.
 
+Renders PNGs inside a Docker container (debian:trixie-slim + librsvg) to ensure
+identical output across macOS, Linux, and CI.
+
 Usage:
-    python3 src/generate_showcase_matrix.py
+    python3 src/generate_showcase_matrix.py --font-dir _output/fonts
 
 Optional arguments:
     python3 src/generate_showcase_matrix.py --output-dir docs/imgs/generated
     python3 src/generate_showcase_matrix.py --plan private-build-plans.toml --family afio
     python3 src/generate_showcase_matrix.py --png-scale 2
 
-Requires: rsvg-convert (librsvg)
-    macOS: brew install librsvg
-    Ubuntu: apt-get install librsvg2-bin
+Requires: docker
 """
 from __future__ import annotations
 
@@ -31,6 +32,7 @@ DEFAULT_TEMPLATE_DIR = ROOT / "docs" / "imgs"
 DEFAULT_OUTPUT_DIR = DEFAULT_TEMPLATE_DIR / "generated"
 
 TEMPLATE = DEFAULT_TEMPLATE_DIR / "afio-showcase.svg"
+DOCKER_IMAGE = "debian:trixie-slim"
 
 THEMES: dict[str, dict[str, str]] = {
     "dark": {
@@ -81,6 +83,12 @@ class WeightSpec:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate light/dark AFIO showcase SVGs for all configured font weights."
+    )
+    parser.add_argument(
+        "--font-dir",
+        type=Path,
+        required=True,
+        help="Directory containing .ttf/.otf font files to install in the render container",
     )
     parser.add_argument(
         "--plan",
@@ -160,16 +168,30 @@ def patch_weight(svg: str, css_weight: int) -> str:
     return svg
 
 
-def render_png(svg_path: Path, png_path: Path, scale: float) -> None:
-    rsvg_convert = shutil.which("rsvg-convert")
-    if not rsvg_convert:
-        raise SystemExit(
-            "rsvg-convert not found. Install librsvg:\n"
-            "  macOS: brew install librsvg\n"
-            "  Ubuntu: apt-get install librsvg2-bin"
-        )
+def render_pngs(svg_paths: list[Path], scale: float, font_dir: Path) -> None:
+    if not shutil.which("docker"):
+        raise SystemExit("docker is required but not found")
+
+    output_dir = svg_paths[0].parent
+
+    render_cmds = " && ".join(
+        f"rsvg-convert --zoom {scale} /work/{p.name} -o /work/{p.with_suffix('.png').name}"
+        for p in svg_paths
+    )
+
     subprocess.run(
-        [rsvg_convert, "--zoom", str(scale), str(svg_path), "-o", str(png_path)],
+        [
+            "docker", "run", "--rm",
+            "--platform", "linux/amd64",
+            "-v", f"{output_dir.resolve()}:/work",
+            "-v", f"{font_dir.resolve()}:/fonts:ro",
+            DOCKER_IMAGE, "bash", "-c",
+            "apt-get update -qq >/dev/null 2>&1 && "
+            "apt-get install -yqq --no-install-recommends librsvg2-bin fontconfig >/dev/null 2>&1 && "
+            "cp /fonts/*.ttf /fonts/*.otf /usr/local/share/fonts/ 2>/dev/null; "
+            "fc-cache -f && "
+            f"{render_cmds}",
+        ],
         check=True,
     )
 
@@ -177,12 +199,14 @@ def render_png(svg_path: Path, png_path: Path, scale: float) -> None:
 def generate_showcase_matrix(
     weights: list[WeightSpec],
     output_dir: Path,
+    font_dir: Path,
     png_scale: float,
 ) -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     generated: list[Path] = []
     template = TEMPLATE.read_text(encoding="utf-8")
 
+    svg_paths: list[Path] = []
     for theme_name, theme_colors in THEMES.items():
         themed = apply_theme(template, theme_colors)
         for weight in weights:
@@ -190,8 +214,10 @@ def generate_showcase_matrix(
             svg_path = output_dir / f"afio-showcase-{theme_name}-{weight.css}.svg"
             png_path = output_dir / f"afio-showcase-{theme_name}-{weight.css}.png"
             svg_path.write_text(patched, encoding="utf-8")
-            render_png(svg_path, png_path, png_scale)
+            svg_paths.append(svg_path)
             generated.extend([svg_path, png_path])
+
+    render_pngs(svg_paths, png_scale, font_dir)
 
     return generated
 
@@ -199,10 +225,15 @@ def generate_showcase_matrix(
 def main() -> int:
     args = parse_args()
     weights = load_weights(args.plan, args.family)
-    generated = generate_showcase_matrix(weights, args.output_dir.resolve(), args.png_scale)
+    generated = generate_showcase_matrix(
+        weights, args.output_dir.resolve(), args.font_dir.resolve(), args.png_scale,
+    )
 
     for path in generated:
-        print(path.relative_to(ROOT))
+        try:
+            print(path.relative_to(ROOT))
+        except ValueError:
+            print(path)
 
     return 0
 

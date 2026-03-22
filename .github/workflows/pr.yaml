@@ -93,19 +93,16 @@ jobs:
           name: font-build
           path: _output
 
-      - name: Install dependencies
+      - name: Extract fonts
         run: |
-          sudo apt-get update -yqq
-          sudo apt-get install -yqq librsvg2-bin imagemagick
-
-      - name: Install font
-        run: |
-          mkdir -p ~/.local/share/fonts
-          unzip _output/${FONT_NAME}-*.zip -d ~/.local/share/fonts/
-          fc-cache -fv
+          mkdir -p _fonts
+          unzip _output/${FONT_NAME}-*.zip -d _fonts/
 
       - name: Generate showcase PNGs
-        run: python3 src/generate_showcase_matrix.py --output-dir _generated
+        run: python3 src/generate_showcase_matrix.py --font-dir _fonts --output-dir _generated
+
+      - name: Install imagemagick
+        run: sudo apt-get update -yqq && sudo apt-get install -yqq imagemagick
 
       - name: Pixel diff with reference
         run: |
