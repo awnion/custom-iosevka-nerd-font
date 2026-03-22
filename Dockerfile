@@ -35,7 +35,20 @@ RUN <<-EOF
 EOF
 
 WORKDIR ${BUILD_DIR}/iosevka
-RUN bun install
+RUN <<-EOF
+    set -e
+    bun install
+    rm -rf images doc changes sample-text docker .github .eslint* .prettier* .editorconfig
+    find node_modules/prettier -type f ! -name 'package.json' -delete
+    rm -rf node_modules/eslint* \
+           node_modules/cldr/3rdparty/cldr/common/annotationsDerived \
+           node_modules/cldr/3rdparty/cldr/common/annotations \
+           node_modules/cldr/3rdparty/cldr/common/testData \
+           node_modules/cldr/3rdparty/cldr/common/uca \
+           node_modules/cldr/3rdparty/cldr/common/subdivisions \
+           node_modules/cldr/test \
+           node_modules/es-abstract
+EOF
 
 ################################################################
 
@@ -50,12 +63,19 @@ RUN <<-EOF
     set -e
     apt-get update -yqq
     apt-get install --no-install-recommends -yqq \
-        python3-fontforge \
-        ttfautohint
+        python3-fontforge
     rm -rf /var/lib/apt/lists/*
 EOF
 
 COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
+
+# Copy ttfautohint binary + only its runtime shared libs (avoids pulling Qt/LLVM)
+COPY --from=builder /usr/bin/ttfautohint /usr/bin/ttfautohint
+COPY --from=builder \
+    /usr/lib/*/libttfautohint*.so* \
+    /usr/lib/*/libharfbuzz.so* \
+    /usr/lib/*/libgraphite2.so* \
+    /usr/lib/
 COPY --from=builder ${BUILD_DIR}/iosevka ${BUILD_DIR}/iosevka
 
 WORKDIR ${BUILD_DIR}/src/glyphs
