@@ -99,9 +99,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Restore verda cache
+        uses: actions/cache@v4
+        with:
+          path: .verda-cache
+          key: verda-${{ hashFiles('VERSION') }}-${{ hashFiles('private-build-plans.toml') }}
+          restore-keys: |
+            verda-${{ hashFiles('VERSION') }}-
+
       - name: Build font
         env:
           IMAGE_REF: ${{ needs.build-image.outputs.image-ref }}
+          VERDA_CACHE: .verda-cache
         run: ./build.sh
 
       - uses: actions/upload-artifact@v4

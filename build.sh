@@ -10,6 +10,7 @@ BUILD_PLAN=${BUILD_PLAN:-private-build-plans.toml}
 OUTPUT_DIR=$(pwd)/_output
 IMAGE=${IMAGE:-ghcr.io/awnion/custom-iosevka-nerd-font}
 IMAGE_REF=${IMAGE_REF:-}
+VERDA_CACHE=${VERDA_CACHE:-}
 
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
@@ -34,9 +35,18 @@ fi
 
 echo "Building font '$FONT_NAME' using plan '$BUILD_PLAN' ..."
 
+CACHE_MOUNT=()
+if [ -n "$VERDA_CACHE" ]; then
+    mkdir -p "$VERDA_CACHE"
+    VERDA_CACHE=$(cd "$VERDA_CACHE" && pwd)
+    echo "Using verda cache: $VERDA_CACHE"
+    CACHE_MOUNT=(-v "$VERDA_CACHE":${BUILD_DIR}/iosevka/.build)
+fi
+
 docker run --rm -t \
     -v "$OUTPUT_DIR":/output \
     -v "$(pwd)/$BUILD_PLAN":${BUILD_DIR}/iosevka/private-build-plans.toml:ro \
+    "${CACHE_MOUNT[@]}" \
     "$IMAGE_REF" -c "\
         cd ${BUILD_DIR}/iosevka && \
         bun run build -- ttf::${FONT_NAME} && \
