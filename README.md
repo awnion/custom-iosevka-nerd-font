@@ -20,7 +20,13 @@ This repo is two things in one:
 
 ## Use AFIO as-is
 
-### Download
+### Install (macOS)
+
+```bash
+brew install --cask awnion/tap/font-afio
+```
+
+### Install (manual)
 
 Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-nerd-font/releases).
 

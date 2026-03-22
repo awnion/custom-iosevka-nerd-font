@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -17,6 +17,33 @@ env:
   FONT_NAME: afio
 
 jobs:
+  rc-checks:
+    if: startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Validate VERSION matches branch
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          BRANCH="${{ github.head_ref }}"
+          EXPECTED="v${VERSION}-rc"
+          if [ "$BRANCH" != "$EXPECTED" ]; then
+            echo "::error::VERSION file (${VERSION}) does not match branch ${BRANCH} (expected ${EXPECTED})"
+            exit 1
+          fi
+
+      - name: Check release notes in PR description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if [ -z "$PR_BODY" ]; then
+            echo "::error::PR description is required for RC branches (used as release notes)"
+            exit 1
+          fi
+
   build-image:
     runs-on: ubuntu-latest
     outputs:
@@ -140,3 +167,44 @@ jobs:
         with:
           name: visual-generated
           path: _generated/*.png
+
+  prerelease:
+    if: startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
+    needs: [rc-checks, visual-check]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Extract version
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+
+      - name: Download font artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: font-build
+          path: _output
+
+      - name: Create pre-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          RC_TAG="v${VERSION}-rc.${{ github.run_number }}"
+
+          mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${RC_TAG}.zip"
+
+          gh api "repos/${{ github.repository }}/git/refs" \
+            -f ref="refs/tags/${RC_TAG}" \
+            -f sha="${SHA}"
+
+          gh release create "$RC_TAG" \
+            "_output/${FONT_NAME}-${RC_TAG}.zip" \
+            -R "${{ github.repository }}" \
+            --prerelease \
+            --title "$RC_TAG" \
+            --notes "$PR_BODY"

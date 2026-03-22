@@ -28,10 +28,6 @@ jobs:
        endsWith(github.head_ref, '-rc'))
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
       - name: Gather PR info
         id: pr
         env:
@@ -43,10 +39,12 @@ jobs:
             PR_NUMBER="${{ github.event.pull_request.number }}"
           fi
 
-          PR_JSON=$(gh pr view "$PR_NUMBER" --json headRefName,headRefOid,state,mergeCommit)
+          PR_JSON=$(gh pr view "$PR_NUMBER" \
+            -R "${{ github.repository }}" \
+            --json headRefName,headRefOid,state,mergeCommit)
           BRANCH=$(echo "$PR_JSON" | jq -r .headRefName)
-          HEAD_SHA=$(echo "$PR_JSON" | jq -r .headRefOid)
           STATE=$(echo "$PR_JSON" | jq -r .state)
+          HEAD_SHA=$(echo "$PR_JSON" | jq -r .headRefOid)
           MERGE_SHA=$(echo "$PR_JSON" | jq -r '.mergeCommit.oid')
 
           if [ "$STATE" != "MERGED" ]; then
@@ -62,81 +60,79 @@ jobs:
           VERSION=$(echo "$BRANCH" | sed 's/^v\(.*\)-rc$/\1/')
           TAG="v${VERSION}"
 
-          FILE_VERSION=$(git show "${HEAD_SHA}:VERSION" | tr -d '[:space:]')
-          if [ "$FILE_VERSION" != "$VERSION" ]; then
-            echo "::error::VERSION file ($FILE_VERSION) does not match branch ($VERSION)"
-            exit 1
-          fi
-
           echo "head_sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
           echo "short_sha=${HEAD_SHA::7}" >> "$GITHUB_OUTPUT"
           echo "merge_sha=${MERGE_SHA}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Find latest pre-release
+      - name: Find pre-release for HEAD commit
         id: prerelease
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.pr.outputs.version }}
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
         run: |
-          PRERELEASE_TAG=$(gh release list \
-            --json tagName,isPrerelease \
-            --jq "[.[] | select(.isPrerelease and (.tagName | startswith(\"v${VERSION}-rc.\")))] | sort_by(.tagName) | last | .tagName")
+          TAG_REF=$(gh api "repos/${{ github.repository }}/git/matching-refs/tags/v${VERSION}-rc." \
+            --jq "[.[] | select(.object.sha == \"${HEAD_SHA}\")] | last | .ref")
 
-          if [ -z "$PRERELEASE_TAG" ] || [ "$PRERELEASE_TAG" = "null" ]; then
-            echo "::error::No pre-release found for v${VERSION}-rc.*"
+          if [ -z "$TAG_REF" ] || [ "$TAG_REF" = "null" ]; then
+            echo "::error::No RC tag found at commit ${HEAD_SHA::7}"
             exit 1
           fi
 
+          PRERELEASE_TAG="${TAG_REF#refs/tags/}"
           echo "Found pre-release: ${PRERELEASE_TAG}"
           echo "tag=${PRERELEASE_TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Create release tag
+      - name: Download pre-release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRERELEASE_TAG: ${{ steps.prerelease.outputs.tag }}
+        run: |
+          mkdir -p _output
+          gh release download "$PRERELEASE_TAG" \
+            -R "${{ github.repository }}" \
+            --pattern "${FONT_NAME}-*" --dir _output
+
+      - name: Create tag and release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.pr.outputs.tag }}
+          VERSION: ${{ steps.pr.outputs.version }}
           MERGE_SHA: ${{ steps.pr.outputs.merge_sha }}
+          PRERELEASE_TAG: ${{ steps.prerelease.outputs.tag }}
         run: |
           if gh api "repos/${{ github.repository }}/git/refs/tags/${TAG}" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping"
+            echo "Tag $TAG already exists, verifying it points to ${MERGE_SHA::7}"
+            EXISTING_SHA=$(gh api "repos/${{ github.repository }}/git/refs/tags/${TAG}" --jq .object.sha)
+            if [ "$EXISTING_SHA" != "$MERGE_SHA" ]; then
+              echo "::error::Tag $TAG exists but points to ${EXISTING_SHA::7}, expected ${MERGE_SHA::7}"
+              exit 1
+            fi
           else
             gh api "repos/${{ github.repository }}/git/refs" \
               -f ref="refs/tags/${TAG}" \
               -f sha="${MERGE_SHA}"
           fi
 
-      - name: Promote pre-release to release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRERELEASE_TAG: ${{ steps.prerelease.outputs.tag }}
-          TAG: ${{ steps.pr.outputs.tag }}
-          VERSION: ${{ steps.pr.outputs.version }}
-        run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          if gh release view "$TAG" -R "${{ github.repository }}" >/dev/null 2>&1; then
             echo "Release $TAG already exists, skipping"
             exit 0
           fi
 
-          mkdir -p _output
-          gh release download "$PRERELEASE_TAG" \
-            --pattern "${FONT_NAME}-*" --dir _output
-
-          RELEASE_INFO=$(gh api "repos/${{ github.repository }}/releases/tags/${PRERELEASE_TAG}")
-          RELEASE_ID=$(echo "$RELEASE_INFO" | jq .id)
-          ASSET_ID=$(echo "$RELEASE_INFO" | jq '.assets[0].id // empty')
-
-          if [ -n "$ASSET_ID" ]; then
-            gh api -X DELETE "repos/${{ github.repository }}/releases/assets/${ASSET_ID}"
-          fi
-
-          gh api -X PATCH "repos/${{ github.repository }}/releases/${RELEASE_ID}" \
-            -f tag_name="${TAG}" \
-            -f name="${TAG}" \
-            -F prerelease=false
-
           mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${VERSION}.zip"
-          gh release upload "${TAG}" "_output/${FONT_NAME}-${VERSION}.zip"
+
+          gh release view "$PRERELEASE_TAG" \
+            -R "${{ github.repository }}" \
+            --json body -q .body > /tmp/notes.md
+
+          gh release create "$TAG" \
+            "_output/${FONT_NAME}-${VERSION}.zip" \
+            -R "${{ github.repository }}" \
+            --title "$TAG" \
+            --latest \
+            --notes-file /tmp/notes.md
 
       - uses: docker/setup-buildx-action@v4
 
