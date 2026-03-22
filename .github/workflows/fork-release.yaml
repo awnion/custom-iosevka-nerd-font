@@ -20,6 +20,7 @@ env:
 
 jobs:
   build:
+    if: github.repository != 'awnion/custom-iosevka-nerd-font'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
