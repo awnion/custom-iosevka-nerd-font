@@ -41,4 +41,4 @@ docker run --rm -t \
         cd ${BUILD_DIR}/iosevka && \
         bun run build -- ttf::${FONT_NAME} && \
         cd ${BUILD_DIR} && \
-        python3 docker_run.py"
+        python3 nerd-patcher.py"
