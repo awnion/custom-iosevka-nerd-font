@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
   packages: write
 
 env:
@@ -137,75 +137,3 @@ jobs:
         with:
           name: visual-diffs
           path: _diffs/
-
-  prerelease:
-    needs: visual-check
-    if: startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Validate VERSION matches branch
-        run: |
-          VERSION=$(cat VERSION | tr -d '[:space:]')
-          BRANCH="${{ github.head_ref }}"
-          EXPECTED="v${VERSION}-rc"
-          if [ "$BRANCH" != "$EXPECTED" ]; then
-            echo "::error::Branch ($BRANCH) does not match VERSION ($EXPECTED)"
-            exit 1
-          fi
-          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
-
-      - name: Check PR approval
-        id: approval
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          DECISION=$(gh pr view ${{ github.event.pull_request.number }} \
-            --json reviewDecision -q .reviewDecision)
-          if [ "$DECISION" != "APPROVED" ]; then
-            echo "::notice::PR not approved yet, skipping pre-release"
-            echo "approved=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "approved=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Check release notes
-        if: steps.approval.outputs.approved == 'true'
-        env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-        run: |
-          if [ -z "$PR_BODY" ]; then
-            echo "::error::Release notes required in PR description for RC branches"
-            exit 1
-          fi
-
-      - uses: actions/download-artifact@v4
-        if: steps.approval.outputs.approved == 'true'
-        with:
-          name: font-build
-          path: _output
-
-      - name: Create pre-release
-        if: steps.approval.outputs.approved == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          RC_TAG="v${VERSION}-rc.${{ github.run_number }}"
-
-          mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${RC_TAG}.zip"
-
-          git tag "$RC_TAG" "$SHA"
-          git push origin "$RC_TAG"
-
-          gh pr view ${{ github.event.pull_request.number }} \
-            --json body -q .body > /tmp/notes.md
-
-          gh release create "$RC_TAG" \
-            "_output/${FONT_NAME}-${RC_TAG}.zip" \
-            --prerelease \
-            --title "$RC_TAG" \
-            --notes-file /tmp/notes.md
