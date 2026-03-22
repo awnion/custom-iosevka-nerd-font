@@ -1,145 +1,154 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - "v[0-9]+.*"
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: "RC PR number (manual retry)"
+        required: true
+        type: number
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ghcr.io/${{ github.repository }}
+  FONT_NAME: afio
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build font
-        run: ./build.sh
-
-      - name: Display structure of created files
-        run: ls -R ./_output
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: font-build
-          path: ./_output/afio-*.zip
-
-  pre-release:
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: font-build
-
-      - name: Prepare artifact
-        run: mv afio-*.zip afio-latest.zip
-
-      - name: Create or update latest pre-release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: latest
-          name: Latest build
-          prerelease: true
-          allowUpdates: true
-          removeArtifacts: true
-          artifacts: afio-latest.zip
-          body: |
-            ## Install latest build
-
-            ### Download
-
-            ```bash
-            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
-            ```
-
-            ### Install (macOS)
-
-            ```bash
-            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
-            unzip -o afio-latest.zip -d ~/Library/Fonts/
-            ```
-
-            ### Install (Linux)
-
-            ```bash
-            curl -fsSLO https://github.com/${{ github.repository }}/releases/download/latest/afio-latest.zip
-            mkdir -p ~/.local/share/fonts
-            unzip -o afio-latest.zip -d ~/.local/share/fonts/
-            fc-cache -fv
-            ```
-
-            ---
-
-            > This is an automated pre-release from the latest commit on `main`.
-            > For stable versions, see [tagged releases](https://github.com/${{ github.repository }}/releases).
-
   release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       startsWith(github.head_ref, 'v') &&
+       endsWith(github.head_ref, '-rc'))
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: font-build
-
-      - name: Prepare artifact
-        run: mv afio-*.zip afio-${{ github.ref_name }}.zip
-
-      - name: Get previous tag
-        id: prev_tag
+      - name: Gather PR info
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PREV_TAG=$(git describe --tags --match "v[0-9]*" --abbrev=0 "${{ github.ref_name }}"^ 2>/dev/null || echo "")
-          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
-
-      - name: Generate changelog
-        id: changelog
-        run: |
-          if [ -n "${{ steps.prev_tag.outputs.tag }}" ]; then
-            LOG=$(git log --pretty=format:"- %s (%h)" "${{ steps.prev_tag.outputs.tag }}".."${{ github.ref_name }}")
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PR_NUMBER="${{ inputs.pr-number }}"
           else
-            LOG=$(git log --pretty=format:"- %s (%h)")
+            PR_NUMBER="${{ github.event.pull_request.number }}"
           fi
-          {
-            echo "log<<EOF"
-            echo "$LOG"
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
 
-      - name: Create release
-        uses: ncipollo/release-action@v1
+          BRANCH=$(gh pr view "$PR_NUMBER" --json headRefName -q .headRefName)
+          HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid -q .headRefOid)
+          MERGED=$(gh pr view "$PR_NUMBER" --json merged -q .merged)
+          MERGE_SHA=$(gh pr view "$PR_NUMBER" --json mergeCommit --jq '.mergeCommit.oid')
+
+          if [ "$MERGED" != "true" ]; then
+            echo "::error::PR #${PR_NUMBER} is not merged"
+            exit 1
+          fi
+
+          if [[ ! "$BRANCH" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc$ ]]; then
+            echo "::error::Branch $BRANCH is not an RC branch (expected v*.*.*-rc)"
+            exit 1
+          fi
+
+          VERSION=$(echo "$BRANCH" | sed 's/^v\(.*\)-rc$/\1/')
+          TAG="v${VERSION}"
+
+          FILE_VERSION=$(git show "${HEAD_SHA}:VERSION" | tr -d '[:space:]')
+          if [ "$FILE_VERSION" != "$VERSION" ]; then
+            echo "::error::VERSION file ($FILE_VERSION) does not match branch ($VERSION)"
+            exit 1
+          fi
+
+          echo "head_sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${HEAD_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "merge_sha=${MERGE_SHA}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Find latest pre-release
+        id: prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.pr.outputs.version }}
+        run: |
+          PRERELEASE_TAG=$(gh release list \
+            --json tagName,isPrerelease \
+            --jq "[.[] | select(.isPrerelease and (.tagName | startswith(\"v${VERSION}-rc.\")))] | sort_by(.tagName) | last | .tagName")
+
+          if [ -z "$PRERELEASE_TAG" ] || [ "$PRERELEASE_TAG" = "null" ]; then
+            echo "::error::No pre-release found for v${VERSION}-rc.*"
+            exit 1
+          fi
+
+          echo "Found pre-release: ${PRERELEASE_TAG}"
+          echo "tag=${PRERELEASE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Create release tag
+        env:
+          TAG: ${{ steps.pr.outputs.tag }}
+          MERGE_SHA: ${{ steps.pr.outputs.merge_sha }}
+        run: |
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git tag "$TAG" "$MERGE_SHA"
+            git push origin "$TAG"
+          fi
+
+      - name: Promote pre-release to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRERELEASE_TAG: ${{ steps.prerelease.outputs.tag }}
+          TAG: ${{ steps.pr.outputs.tag }}
+          VERSION: ${{ steps.pr.outputs.version }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists, skipping"
+            exit 0
+          fi
+
+          mkdir -p _output
+          gh release download "$PRERELEASE_TAG" \
+            --pattern "${FONT_NAME}-*" --dir _output
+
+          RELEASE_INFO=$(gh api "repos/${{ github.repository }}/releases/tags/${PRERELEASE_TAG}")
+          RELEASE_ID=$(echo "$RELEASE_INFO" | jq .id)
+          ASSET_ID=$(echo "$RELEASE_INFO" | jq '.assets[0].id // empty')
+
+          if [ -n "$ASSET_ID" ]; then
+            gh api -X DELETE "repos/${{ github.repository }}/releases/assets/${ASSET_ID}"
+          fi
+
+          gh api -X PATCH "repos/${{ github.repository }}/releases/${RELEASE_ID}" \
+            -f tag_name="${TAG}" \
+            -f name="${TAG}" \
+            -F prerelease=false
+
+          mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${VERSION}.zip"
+          gh release upload "${TAG}" "_output/${FONT_NAME}-${VERSION}.zip"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/login-action@v4
         with:
-          tag: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          prerelease: false
-          artifacts: afio-${{ github.ref_name }}.zip
-          body: |
-            ## What's changed
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            ${{ steps.changelog.outputs.log }}
+      - name: Re-tag docker image
+        env:
+          VERSION: ${{ steps.pr.outputs.version }}
+          SHORT_SHA: ${{ steps.pr.outputs.short_sha }}
+        run: |
+          docker buildx imagetools create \
+            -t "${IMAGE}:${VERSION}" \
+            -t "${IMAGE}:latest" \
+            "${IMAGE}:sha-${SHORT_SHA}"
