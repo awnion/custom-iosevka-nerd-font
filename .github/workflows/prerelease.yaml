@@ -77,8 +77,9 @@ jobs:
 
           mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${RC_TAG}.zip"
 
-          git tag "$RC_TAG" "$SHA"
-          git push origin "$RC_TAG"
+          gh api "repos/${{ github.repository }}/git/refs" \
+            -f ref="refs/tags/${RC_TAG}" \
+            -f sha="${SHA}"
 
           gh pr view "${{ steps.pr.outputs.number }}" \
             --json body -q .body > /tmp/notes.md
