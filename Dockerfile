@@ -83,8 +83,8 @@ COPY --link nerd/glyphs .
 
 WORKDIR ${BUILD_DIR}
 COPY --link nerd/font-patcher .
-COPY --link ./src/docker_run.py .
-RUN chmod +x docker_run.py
+COPY --link ./src/nerd-patcher.py .
+RUN chmod +x nerd-patcher.py
 
 WORKDIR ${BUILD_DIR}
 
