@@ -137,3 +137,9 @@ jobs:
         with:
           name: visual-diffs
           path: _diffs/
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-generated
+          path: _generated/*.png
