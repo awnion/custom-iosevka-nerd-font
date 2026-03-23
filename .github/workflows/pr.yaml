@@ -100,7 +100,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Restore verda cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .verda-cache
           key: verda-${{ hashFiles('VERSION') }}-${{ hashFiles('private-build-plans.toml') }}
@@ -113,7 +113,7 @@ jobs:
           VERDA_CACHE: .verda-cache
         run: ./build.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: font-build
           path: _output/${{ env.FONT_NAME }}-*.zip
@@ -124,7 +124,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: font-build
           path: _output
@@ -165,13 +165,13 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: visual-diffs
           path: _diffs/
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: visual-generated
@@ -192,7 +192,7 @@ jobs:
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
 
       - name: Download font artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: font-build
           path: _output
