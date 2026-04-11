@@ -22,6 +22,15 @@
 
 No rebuild happens on merge. All artifacts are reused from the pre-release.
 
+## Release notes
+
+The PR body is used as release notes throughout the pipeline:
+
+1. The `prerelease` job takes the PR body and passes it as `--notes` to `gh release create`
+2. When the PR is merged, the `release` job reads the body from the pre-release via `gh release view` and copies it into the final release via `--notes-file`
+
+**PR body -> pre-release notes -> release notes.** Write the changelog in the PR description.
+
 ## Fork builds
 
 A separate `fork-release.yaml` workflow handles forks. When `private-build-plans.toml` changes on `main` in a forked repo, it automatically builds the font and publishes a `latest` pre-release.
