@@ -103,9 +103,9 @@ jobs:
           MERGE_SHA: ${{ steps.pr.outputs.merge_sha }}
           PRERELEASE_TAG: ${{ steps.prerelease.outputs.tag }}
         run: |
-          if gh api "repos/${{ github.repository }}/git/refs/tags/${TAG}" >/dev/null 2>&1; then
+          if gh api "repos/${{ github.repository }}/git/ref/tags/${TAG}" >/dev/null 2>&1; then
             echo "Tag $TAG already exists, verifying it points to ${MERGE_SHA::7}"
-            EXISTING_SHA=$(gh api "repos/${{ github.repository }}/git/refs/tags/${TAG}" --jq .object.sha)
+            EXISTING_SHA=$(gh api "repos/${{ github.repository }}/git/ref/tags/${TAG}" --jq .object.sha)
             if [ "$EXISTING_SHA" != "$MERGE_SHA" ]; then
               echo "::error::Tag $TAG exists but points to ${EXISTING_SHA::7}, expected ${MERGE_SHA::7}"
               exit 1
