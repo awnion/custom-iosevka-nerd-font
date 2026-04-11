@@ -16,6 +16,7 @@ asterisk = "hex-low"
 percent = "dots"
 tittle = "square"
 at = "fourfold-solid-inner-tall"
+cyrl-em = "hanging-serifless"
 
 [buildPlans.afio.slopes.Upright]
 angle = 0
