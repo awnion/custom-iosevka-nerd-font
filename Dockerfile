@@ -3,8 +3,9 @@
 ARG BUILD_DIR=/build
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-
 ARG IOSEVKA_VERSION=34.7.0
+# Check https://github.com/ryanoasis/nerd-fonts/releases for latest patcher version
+ARG FONT_PATCHER_VERSION=v3.4.0
 ################################################################
 
 # Fat builder: all deps, download source, bun install
@@ -12,6 +13,7 @@ FROM oven/bun:debian AS builder
 
 ARG BUILD_DIR
 ARG IOSEVKA_VERSION
+ARG FONT_PATCHER_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -24,7 +26,8 @@ RUN <<-EOF
         curl \
         fontforge \
         python3-fontforge \
-        ttfautohint
+        ttfautohint \
+        unzip
 EOF
 
 RUN <<-EOF
@@ -48,6 +51,12 @@ RUN <<-EOF
            node_modules/cldr/3rdparty/cldr/common/subdivisions \
            node_modules/cldr/test \
            node_modules/es-abstract
+EOF
+
+WORKDIR ${BUILD_DIR}
+RUN <<-EOF
+    curl -sSL https://github.com/ryanoasis/nerd-fonts/releases/download/${FONT_PATCHER_VERSION}/FontPatcher.zip -o FontPatcher.zip
+    unzip FontPatcher.zip -d nerd
 EOF
 
 ################################################################
@@ -78,11 +87,9 @@ COPY --from=builder \
     /usr/lib/
 COPY --from=builder ${BUILD_DIR}/iosevka ${BUILD_DIR}/iosevka
 
-WORKDIR ${BUILD_DIR}/src/glyphs
-COPY --link nerd/glyphs .
+COPY --from=builder ${BUILD_DIR}/nerd ${BUILD_DIR}/nerd
 
 WORKDIR ${BUILD_DIR}
-COPY --link nerd/font-patcher .
 COPY --link ./src/nerd-patcher.py .
 RUN chmod +x nerd-patcher.py
 
