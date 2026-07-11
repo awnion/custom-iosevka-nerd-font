@@ -47,7 +47,7 @@ def main():
     ttf_dir = path.join(build_dir, f"iosevka/dist/{font_name}/TTF")
     ttf_files = glob.glob(f"{ttf_dir}/*.ttf", recursive=True)
 
-    with Pool(8) as pool:
+    with Pool(multiprocessing.cpu_count()) as pool:
         pool.starmap(patch_fonts, enumerate(ttf_files))
 
     today = date.today().strftime("%Y-%m-%d")
