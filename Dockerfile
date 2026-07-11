@@ -3,8 +3,8 @@
 ARG BUILD_DIR=/build
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG IOSEVKA_VERSION=34.2.1
 
+ARG IOSEVKA_VERSION=34.7.0
 ################################################################
 
 # Fat builder: all deps, download source, bun install
