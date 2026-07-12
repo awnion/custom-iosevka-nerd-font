@@ -4,7 +4,7 @@ import os
 import glob
 
 from datetime import date
-from multiprocessing import Pool
+from multiprocessing import cpu_count, Pool
 from os import path, environ
 from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -14,7 +14,7 @@ def patch_fonts(index, ttf_file):
     log_file = f"{output_dir}/patch.{index}.log"
     command = " ".join(
         [
-            "python3 font-patcher -q",
+            "python3 nerd/font-patcher -q",
             "-s",
             "-l",
             "-c",
@@ -47,7 +47,7 @@ def main():
     ttf_dir = path.join(build_dir, f"iosevka/dist/{font_name}/TTF")
     ttf_files = glob.glob(f"{ttf_dir}/*.ttf", recursive=True)
 
-    with Pool(8) as pool:
+    with Pool(cpu_count()) as pool:
         pool.starmap(patch_fonts, enumerate(ttf_files))
 
     today = date.today().strftime("%Y-%m-%d")
