@@ -1,3 +1,5 @@
+
+
 # AFIO - Custom Iosevka Nerd Font
 
 ![Dark theme showcase](docs/imgs/generated/afio-showcase-dark-400.png)
@@ -32,7 +34,7 @@ Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-n
 
 ### What's inside (very opinionated)
 
-- Custom glyph variants: `f` (flat-hook-serifless), `i` (serifed-asymmetric), `l` (serifed-semi-tailed), `m` (short-leg), `0` (dotted), `9` (open-contour), `*` (hex-low), `%` (dots), `@` (fourfold-solid-inner-tall), tittle (square)
+- Custom glyph variants: `f` (flat-hook-serifless), `i` (serifed-asymmetric), `l` (serifed-semi-tailed), `m` (short-leg), `0` (dotted), `9` (open-contour), `*` (hex-low), `%` (dots), `@` (fourfold-solid-inner-tall), `cyrl-em` (hanging-serifless), tittle (square)
 - Font weights: 300 (light), 400 (regular), 500 (medium), 700 (bold)
 - Bold shape weight is 500 (lighter than default bold)
 - No italic and oblique versions
