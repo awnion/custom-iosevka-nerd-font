@@ -17,6 +17,7 @@ Requires: docker
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -32,7 +33,7 @@ DEFAULT_TEMPLATE_DIR = ROOT / "docs" / "imgs"
 DEFAULT_OUTPUT_DIR = DEFAULT_TEMPLATE_DIR / "generated"
 
 TEMPLATE = DEFAULT_TEMPLATE_DIR / "afio-showcase.svg"
-DOCKER_IMAGE = "debian:trixie-slim"
+DOCKER_IMAGE = os.environ.get("SHOWCASE_IMAGE", "afio-showcase:local")
 
 THEMES: dict[str, dict[str, str]] = {
     "dark": {
@@ -172,6 +173,12 @@ def render_pngs(svg_paths: list[Path], scale: float, font_dir: Path) -> None:
     if not shutil.which("docker"):
         raise SystemExit("docker is required but not found")
 
+    if not os.environ.get("SHOWCASE_IMAGE"):
+        subprocess.run(
+            ["docker", "build", "--platform", "linux/amd64", "-t", DOCKER_IMAGE,
+             "-f", str(ROOT / "Dockerfile.showcase"), str(ROOT)],
+            check=True,
+        )
     output_dir = svg_paths[0].parent
 
     render_cmds = " && ".join(
@@ -186,9 +193,9 @@ def render_pngs(svg_paths: list[Path], scale: float, font_dir: Path) -> None:
             "-v", f"{output_dir.resolve()}:/work",
             "-v", f"{font_dir.resolve()}:/fonts:ro",
             DOCKER_IMAGE, "bash", "-c",
-            "apt-get update -qq >/dev/null 2>&1 && "
-            "apt-get install -yqq --no-install-recommends librsvg2-bin fontconfig >/dev/null 2>&1 && "
-            "cp /fonts/*.ttf /fonts/*.otf /usr/local/share/fonts/ 2>/dev/null; "
+            "set -e; "
+            r"find /fonts -maxdepth 1 -type f \( -name '*.ttf' -o -name '*.otf' \) "
+            r"-exec cp {} /usr/local/share/fonts/ \; && "
             "fc-cache -f && "
             f"{render_cmds}",
         ],

@@ -37,18 +37,31 @@ echo "Building font '$FONT_NAME' using plan '$BUILD_PLAN' ..."
 
 CACHE_MOUNT=()
 if [ -n "$VERDA_CACHE" ]; then
-    mkdir -p "$VERDA_CACHE"
+    mkdir -p "$VERDA_CACHE/build" "$VERDA_CACHE/dist"
     VERDA_CACHE=$(cd "$VERDA_CACHE" && pwd)
     echo "Using verda cache: $VERDA_CACHE"
-    CACHE_MOUNT=(-v "$VERDA_CACHE":${BUILD_DIR}/iosevka/.build)
+    CACHE_MOUNT=(
+        -v "$VERDA_CACHE/build":${BUILD_DIR}/iosevka/.build
+        -v "$VERDA_CACHE/dist":${BUILD_DIR}/iosevka/dist
+    )
 fi
 
-docker run --rm -t \
+TTY_ARGS=()
+if [ -t 1 ]; then
+    TTY_ARGS=(-t)
+fi
+
+docker run --rm "${TTY_ARGS[@]}" \
+    -e FONT_NAME="$FONT_NAME" \
+    -e PATCH_JOBS \
     -v "$OUTPUT_DIR":/output \
     -v "$(pwd)/$BUILD_PLAN":${BUILD_DIR}/iosevka/private-build-plans.toml:ro \
     "${CACHE_MOUNT[@]}" \
     "$IMAGE_REF" -c "\
         cd ${BUILD_DIR}/iosevka && \
-        bun run build -- ttf::${FONT_NAME} && \
+        if [ ! -f .build/.verda-build-journal ] && [ -d .build-seed ]; then \
+            mkdir -p .build && cp -a .build-seed/. .build/; \
+        fi && \
+        time bun run build -- ttf::${FONT_NAME} && \
         cd ${BUILD_DIR} && \
-        python3 nerd-patcher.py"
+        time python3 nerd-patcher.py"

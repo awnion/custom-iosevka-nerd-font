@@ -3,12 +3,12 @@
 ARG BUILD_DIR=/build
 
 # Check https://github.com/be5invis/Iosevka/releases for font version
-ARG IOSEVKA_VERSION=34.2.1
+ARG IOSEVKA_VERSION=34.9.0
 
 ################################################################
 
 # Fat builder: all deps, download source, bun install
-FROM oven/bun:debian AS builder
+FROM oven/bun:1.4.2-debian AS builder
 
 ARG BUILD_DIR
 ARG IOSEVKA_VERSION
@@ -29,7 +29,7 @@ EOF
 
 RUN <<-EOF
     set -ex
-    curl -sSL https://github.com/be5invis/Iosevka/archive/v${IOSEVKA_VERSION}.tar.gz | tar xz -C /
+    curl -fSL --retry 3 https://github.com/be5invis/Iosevka/archive/v${IOSEVKA_VERSION}.tar.gz | tar xz -C /
     mkdir -p ${BUILD_DIR}
     mv /Iosevka-${IOSEVKA_VERSION} ${BUILD_DIR}/iosevka
 EOF
@@ -49,6 +49,9 @@ RUN <<-EOF
            node_modules/cldr/test \
            node_modules/es-abstract
 EOF
+
+# These scripts depend only on the pinned Iosevka source, not on the font plan.
+RUN bun run build -- scripts && cp -a .build .build-seed
 
 ################################################################
 
@@ -82,7 +85,8 @@ WORKDIR ${BUILD_DIR}/src/glyphs
 COPY --link nerd/glyphs .
 
 WORKDIR ${BUILD_DIR}
-COPY --link nerd/font-patcher .
+COPY --link nerd/font-patcher nerd/glyphnames.json ./
+COPY --link nerd/bin ./bin
 COPY --link ./src/nerd-patcher.py .
 RUN chmod +x nerd-patcher.py
 

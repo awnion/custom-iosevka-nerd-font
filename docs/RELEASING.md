@@ -8,16 +8,15 @@
 
 3. **Open a PR** - the `pr.yaml` workflow runs automatically:
    - `rc-checks` validates that `VERSION` matches the branch name
-   - `build-image` builds the Docker image (tagged with commit SHA)
-   - `build-font` compiles the font inside the container
+   - `build-font` builds the Docker image (tagged with commit SHA) and compiles the font inside it
    - `visual-check` generates showcase PNGs and compares them pixel-by-pixel against reference images
    - `prerelease` creates a pre-release tag `v0.0.18-rc.{run_number}` and publishes artifacts to GitHub Releases
 
 4. **Merge the PR into main** - the `release.yaml` workflow runs automatically:
-   - Finds the RC pre-release matching the merge commit SHA
+   - Finds the RC pre-release matching the PR head commit SHA
    - Downloads artifacts from the pre-release
    - Creates a final tag `v0.0.18` on the merge commit
-   - Renames the ZIP to `afio-v0.0.18.zip` and publishes a GitHub Release
+   - Renames the ZIP to `afio-0.0.18.zip` and publishes a GitHub Release
    - Re-tags the Docker image with the version and `latest`
 
 No rebuild happens on merge. All artifacts are reused from the pre-release.
@@ -33,4 +32,4 @@ The PR body is used as release notes throughout the pipeline:
 
 ## Fork builds
 
-A separate `fork-release.yaml` workflow handles forks. When `private-build-plans.toml` changes on `main` in a forked repo, it automatically builds the font and publishes a `latest` pre-release.
+Every push to `main` in a fork runs `fork-release.yaml` and publishes a numbered build (e.g. `build-42.1`) marked **Latest**, with `afio-latest.zip` attached. Edit the config in GitHub and commit to `main`; no PR or registry setup is needed. Enable Actions in the fork if prompted. The original repository skips this workflow.

@@ -38,6 +38,7 @@ Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-n
 - No italic and oblique versions
 - Term spacing, sans serifs
 - Glyph shape width: 540
+- Roughly 3× smaller TTF files by omitting optional character variants and stylistic sets (`noCvSs = true`)
 
 ### vscode settings.json
 
@@ -51,6 +52,14 @@ Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-n
 ...
 ```
 
+With a custom build using `noCvSs = false` (see below), select Iosevka OpenType variants in VS Code through `editor.fontLigatures`:
+
+```jsonc
+"editor.fontLigatures": "'ss05', 'cv42' 17",
+```
+
+These character variants and stylistic sets are separate from ligatures. If your build plan bakes a style set in with `variants.inherits`, enabling that same `ssNN` later will not visibly change the glyphs because it is already the default design.
+
 ---
 
 <a id="build-your-own"></a>
@@ -59,14 +68,24 @@ Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-n
 
 ### Option A: Fork + GitHub Actions (easiest)
 
-1. Fork this repo
-2. Edit `private-build-plans.toml` ([Iosevka customizer](https://typeof.net/Iosevka/customizer) can help)
-3. Push, and GitHub Actions builds and releases your font automatically
+1. Click **Fork** on GitHub.
+2. Open the **Actions** tab in your fork and enable workflows if GitHub asks.
+3. Open `private-build-plans.toml`, click the pencil icon, change the settings, and choose **Commit directly to the main branch**. You can also replace the file with a build plan from the [Iosevka customizer](https://typeof.net/Iosevka/customizer); keep the plan key `afio`.
+4. Wait for **Fork release** to finish, then open **Releases → Latest** in your fork and download `afio-latest.zip`.
+
+**Example:** To enable optional character variants and stylistic sets, change this one line in `private-build-plans.toml` (roughly 3× larger total TTF size):
+
+```diff
+-noCvSs = true
++noCvSs = false
+```
+
+Every push to `main` in a fork creates a numbered release (e.g. `build-42.1`) marked **Latest**. This does not run in the original repository. You can also run or disable **Fork release** from the Actions tab.
 
 ### Option B: Local Docker build
 
 ```bash
-./build.sh
+VERDA_CACHE=.verda-cache ./build.sh
 ```
 
 Fonts will be in `_output` dir.
