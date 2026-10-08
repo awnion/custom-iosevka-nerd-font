@@ -37,18 +37,40 @@ echo "Building font '$FONT_NAME' using plan '$BUILD_PLAN' ..."
 
 CACHE_MOUNT=()
 if [ -n "$VERDA_CACHE" ]; then
-    mkdir -p "$VERDA_CACHE"
+    if command -v sha256sum >/dev/null 2>&1; then
+        PLAN_HASH=$(sha256sum < "$BUILD_PLAN")
+    else
+        PLAN_HASH=$(shasum -a 256 < "$BUILD_PLAN")
+    fi
+    PLAN_HASH=${PLAN_HASH%% *}
+    # Outputs from a different plan can contain weights or slants now removed.
+    DIST_CACHE="$VERDA_CACHE/dist-$PLAN_HASH"
+    mkdir -p "$VERDA_CACHE/build" "$DIST_CACHE"
     VERDA_CACHE=$(cd "$VERDA_CACHE" && pwd)
+    DIST_CACHE=$(cd "$DIST_CACHE" && pwd)
     echo "Using verda cache: $VERDA_CACHE"
-    CACHE_MOUNT=(-v "$VERDA_CACHE":${BUILD_DIR}/iosevka/.build)
+    CACHE_MOUNT=(
+        -v "$VERDA_CACHE/build":${BUILD_DIR}/iosevka/.build
+        -v "$DIST_CACHE":${BUILD_DIR}/iosevka/dist
+    )
 fi
 
-docker run --rm -t \
+TTY_ARGS=()
+if [ -t 1 ]; then
+    TTY_ARGS=(-t)
+fi
+
+docker run --rm "${TTY_ARGS[@]}" \
+    -e FONT_NAME="$FONT_NAME" \
+    -e PATCH_JOBS \
     -v "$OUTPUT_DIR":/output \
     -v "$(pwd)/$BUILD_PLAN":${BUILD_DIR}/iosevka/private-build-plans.toml:ro \
     "${CACHE_MOUNT[@]}" \
     "$IMAGE_REF" -c "\
         cd ${BUILD_DIR}/iosevka && \
-        bun run build -- ttf::${FONT_NAME} && \
+        if [ ! -f .build/.verda-build-journal ] && [ -d .build-seed ]; then \
+            mkdir -p .build && cp -a .build-seed/. .build/; \
+        fi && \
+        time bun run build -- ttf::${FONT_NAME} && \
         cd ${BUILD_DIR} && \
-        python3 nerd-patcher.py"
+        time python3 nerd-patcher.py"

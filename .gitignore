@@ -5,3 +5,6 @@
 _output
 _output.*
 result
+
+.verda-cache
+__pycache__/

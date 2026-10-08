@@ -17,8 +17,14 @@ env:
   FONT_NAME: afio
 
 jobs:
+  wrapper-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: python3 -m unittest discover -s tests -v
+
   rc-checks:
-    if: startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
+    if: github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -26,9 +32,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Validate VERSION matches branch
+        env:
+          BRANCH: ${{ github.head_ref }}
         run: |
           VERSION=$(cat VERSION | tr -d '[:space:]')
-          BRANCH="${{ github.head_ref }}"
           EXPECTED="v${VERSION}-rc"
           if [ "$BRANCH" != "$EXPECTED" ]; then
             echo "::error::VERSION file (${VERSION}) does not match branch ${BRANCH} (expected ${EXPECTED})"
@@ -44,11 +51,8 @@ jobs:
             exit 1
           fi
 
-  build-image:
+  build-font:
     runs-on: ubuntu-latest
-    outputs:
-      image-ref: ${{ steps.refs.outputs.image_ref }}
-      short-sha: ${{ steps.sha.outputs.short }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -57,6 +61,7 @@ jobs:
       - uses: docker/setup-buildx-action@v4
 
       - uses: docker/login-action@v4
+        if: github.event.pull_request.head.repo.full_name == github.repository
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -77,39 +82,23 @@ jobs:
       - uses: docker/build-push-action@v7
         with:
           context: .
-          push: true
+          load: true
+          push: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - id: refs
-        run: echo "image_ref=${{ env.IMAGE }}:sha-${{ steps.sha.outputs.short }}" >> "$GITHUB_OUTPUT"
-
-  build-font:
-    needs: build-image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Restore verda cache
         uses: actions/cache@v5
         with:
           path: .verda-cache
-          key: verda-${{ hashFiles('VERSION') }}-${{ hashFiles('private-build-plans.toml') }}
+          key: verda-v2-${{ runner.os }}-${{ hashFiles('Dockerfile') }}-${{ hashFiles('private-build-plans.toml') }}
           restore-keys: |
-            verda-${{ hashFiles('VERSION') }}-
+            verda-v2-${{ runner.os }}-${{ hashFiles('Dockerfile') }}-
 
       - name: Build font
         env:
-          IMAGE_REF: ${{ needs.build-image.outputs.image-ref }}
+          IMAGE_REF: ${{ steps.meta.outputs.tags }}
           VERDA_CACHE: .verda-cache
         run: ./build.sh
 
@@ -117,6 +106,13 @@ jobs:
         with:
           name: font-build
           path: _output/${{ env.FONT_NAME }}-*.zip
+
+  # Keep the required image check: build-font builds and pushes the image too.
+  build-image:
+    needs: build-font
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Image and font build succeeded"
 
   visual-check:
     needs: build-font
@@ -132,9 +128,27 @@ jobs:
       - name: Extract fonts
         run: |
           mkdir -p _fonts
-          unzip _output/${FONT_NAME}-*.zip -d _fonts/
+          unzip _output/"${FONT_NAME}"-*.zip -d _fonts/
+
+      - name: Check OpenType features
+        run: python3 src/check_opentype_features.py --build-plan private-build-plans.toml --plan "$FONT_NAME" _fonts/*.ttf
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build showcase renderer
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: Dockerfile.showcase
+          platforms: linux/amd64
+          load: true
+          tags: afio-showcase:ci
+          cache-from: type=gha,scope=showcase
+          cache-to: type=gha,scope=showcase,mode=max
 
       - name: Generate showcase PNGs
+        env:
+          SHOWCASE_IMAGE: afio-showcase:ci
         run: python3 src/generate_showcase_matrix.py --font-dir _fonts --output-dir _generated
 
       - name: Install imagemagick
@@ -178,8 +192,8 @@ jobs:
           path: _generated/*.png
 
   prerelease:
-    if: startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
-    needs: [rc-checks, visual-check]
+    if: github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.head_ref, 'v') && endsWith(github.head_ref, '-rc')
+    needs: [rc-checks, visual-check, wrapper-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -205,7 +219,7 @@ jobs:
         run: |
           RC_TAG="v${VERSION}-rc.${{ github.run_number }}"
 
-          mv _output/${FONT_NAME}-*.zip "_output/${FONT_NAME}-${RC_TAG}.zip"
+          mv _output/"${FONT_NAME}"-*.zip "_output/${FONT_NAME}-${RC_TAG}.zip"
 
           gh api "repos/${{ github.repository }}/git/refs" \
             -f ref="refs/tags/${RC_TAG}" \

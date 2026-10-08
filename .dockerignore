@@ -1,0 +1,9 @@
+.git
+.claude
+.vscode
+.uv-cache
+.local
+_output*
+.verda-cache
+**/__pycache__
+tests

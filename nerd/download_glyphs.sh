@@ -1,26 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Download the official FontPatcher.zip from a tagged Nerd Fonts release.
+# Update font-patcher, Python helpers, glyphnames.json and glyph assets together.
+# Usage: /path/to/nerd/download_glyphs.sh [version] (default: 3.5.1).
+# Run from any working directory; files are installed beside this script.
+# Leave the local maintenance guide in nerd/README.md untouched.
+# Extract in a temporary directory, remove it on exit, and leave changes uncommitted.
+set -euo pipefail
 
-set -e
+VERSION=${1:-3.5.1}
+DEST=$(cd "$(dirname "$0")" && pwd)
+TEMP=$(mktemp -d)
+trap 'rm -rf "$TEMP"' EXIT
 
-mkdir -p glyphs
-cd glyphs
-
-BASE_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/src/glyphs"
-
-xargs -n1 -P20 -I{} curl --create-dirs -svLo {} "$BASE_URL"/{} <<EOF
-"codicons/codicon.ttf"
-"devicons/devicons.ttf"
-"font-awesome/FontAwesome.otf"
-"materialdesign/MaterialDesignIconsDesktop.ttf"
-"materialdesign/materialdesignicons-webfont.ttf"
-"octicons/octicons.ttf"
-"pomicons/Pomicons.otf"
-"powerline-extra/PowerlineExtraSymbols.otf"
-"powerline-symbols/PowerlineSymbols.otf"
-"weather-icons/weathericons-regular-webfont.ttf"
-"Unicode_IEC_symbol_font.otf"
-"font-awesome-extension.ttf"
-"font-logos.ttf"
-"original-source.otf"
-"extraglyphs.sfd"
-EOF
+curl -fSL --retry 3 \
+    "https://github.com/ryanoasis/nerd-fonts/releases/download/v${VERSION}/FontPatcher.zip" \
+    -o "$TEMP/FontPatcher.zip"
+unzip -q "$TEMP/FontPatcher.zip" -d "$TEMP/upstream"
+cp "$TEMP/upstream/font-patcher" "$DEST/font-patcher"
+cp "$TEMP/upstream/glyphnames.json" "$DEST/glyphnames.json"
+mkdir -p "$DEST/bin" "$DEST/glyphs"
+cp -R "$TEMP/upstream/bin/." "$DEST/bin/"
+cp -R "$TEMP/upstream/src/glyphs/." "$DEST/glyphs/"
