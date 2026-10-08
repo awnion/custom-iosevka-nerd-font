@@ -38,9 +38,9 @@ echo "Building font '$FONT_NAME' using plan '$BUILD_PLAN' ..."
 CACHE_MOUNT=()
 if [ -n "$VERDA_CACHE" ]; then
     if command -v sha256sum >/dev/null 2>&1; then
-        PLAN_HASH=$(sha256sum "$BUILD_PLAN")
+        PLAN_HASH=$(sha256sum < "$BUILD_PLAN")
     else
-        PLAN_HASH=$(shasum -a 256 "$BUILD_PLAN")
+        PLAN_HASH=$(shasum -a 256 < "$BUILD_PLAN")
     fi
     PLAN_HASH=${PLAN_HASH%% *}
     # Outputs from a different plan can contain weights or slants now removed.

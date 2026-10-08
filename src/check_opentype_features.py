@@ -87,6 +87,8 @@ def main():
         try:
             with args.build_plan.open("rb") as source:
                 plan = tomllib.load(source)["buildPlans"][args.plan]
+            if not isinstance(plan, dict):
+                raise ValueError(f"buildPlans.{args.plan} must be a table")
             no_cv_ss = plan.get("noCvSs", False)
             if not isinstance(no_cv_ss, bool):
                 raise ValueError("noCvSs must be a boolean")

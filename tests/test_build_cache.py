@@ -16,7 +16,8 @@ class BuildCacheTests(unittest.TestCase):
             docker.write_text('#!/bin/sh\nprintf "%s\\n" "$@" > "$DOCKER_ARGS"\n')
             docker.chmod(0o755)
             arguments = root / "arguments"
-            plan = root / "custom-plan.toml"
+            # A leading dash must be treated as a filename, not a checksum option.
+            plan = root / "-custom-plan.toml"
             env = {
                 **os.environ,
                 "PATH": f"{root}:{os.environ['PATH']}",

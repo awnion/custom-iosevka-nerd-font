@@ -55,7 +55,7 @@ Grab the latest build from [releases](https://github.com/awnion/custom-iosevka-n
 With a custom build using `noCvSs = false` (see below), select Iosevka OpenType variants in VS Code through `editor.fontLigatures`:
 
 ```jsonc
-"editor.fontLigatures": "'ss05', 'cv42' 17",
+"editor.fontLigatures": "'ss05', 'cv42'",
 ```
 
 These character variants and stylistic sets are separate from ligatures. If your build plan bakes a style set in with `variants.inherits`, enabling that same `ssNN` later will not visibly change the glyphs because it is already the default design.
@@ -80,7 +80,7 @@ These character variants and stylistic sets are separate from ligatures. If your
 +noCvSs = false
 ```
 
-Every push to `main` in a fork creates a numbered release (e.g. `build-42.1`) marked **Latest**. This does not run in the original repository. You can also run or disable **Fork release** from the Actions tab.
+Every successful build from a push to `main` in a fork creates a numbered release (e.g. `build-42.1`) marked **Latest**. This does not run in the original repository. You can also run or disable **Fork release** from the Actions tab.
 
 ### Option B: Local Docker build
 

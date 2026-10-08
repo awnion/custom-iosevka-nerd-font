@@ -10,7 +10,7 @@ CHECKER = Path(__file__).resolve().parents[1] / "src" / "check_opentype_features
 
 
 class OpenTypeFeatureTests(unittest.TestCase):
-    def check(self, features, setting, *options):
+    def check(self, features, setting, *options, plan_contents=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             # Minimal sfnt containing the GSUB feature records consumed by the checker.
@@ -22,7 +22,8 @@ class OpenTypeFeatureTests(unittest.TestCase):
                 + struct.pack(">4sIII", b"GSUB", 0, 28, len(gsub)) + gsub
             )
             plan = root / "plan.toml"
-            plan.write_text(f"[buildPlans.custom]\n{setting}\n")
+            plan.write_text(plan_contents if plan_contents is not None
+                            else f"[buildPlans.custom]\n{setting}\n")
             return subprocess.run(
                 [sys.executable, str(CHECKER), "--build-plan", str(plan),
                  "--plan", "custom", *options, str(font)],
@@ -58,6 +59,12 @@ class OpenTypeFeatureTests(unittest.TestCase):
         result = self.check([], 'noCvSs = "true"')
         self.assertEqual(result.returncode, 1)
         self.assertIn("noCvSs must be a boolean", result.stderr)
+
+    def test_selected_plan_must_be_a_table(self):
+        result = self.check([], "", plan_contents="[buildPlans]\ncustom = true\n")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("buildPlans.custom must be a table", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
 
 
 if __name__ == "__main__":
