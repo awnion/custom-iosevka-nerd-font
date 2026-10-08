@@ -107,6 +107,13 @@ jobs:
           name: font-build
           path: _output/${{ env.FONT_NAME }}-*.zip
 
+  # Keep the required image check: build-font builds and pushes the image too.
+  build-image:
+    needs: build-font
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Image and font build succeeded"
+
   visual-check:
     needs: build-font
     runs-on: ubuntu-latest

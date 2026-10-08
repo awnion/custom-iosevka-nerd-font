@@ -37,12 +37,21 @@ echo "Building font '$FONT_NAME' using plan '$BUILD_PLAN' ..."
 
 CACHE_MOUNT=()
 if [ -n "$VERDA_CACHE" ]; then
-    mkdir -p "$VERDA_CACHE/build" "$VERDA_CACHE/dist"
+    if command -v sha256sum >/dev/null 2>&1; then
+        PLAN_HASH=$(sha256sum "$BUILD_PLAN")
+    else
+        PLAN_HASH=$(shasum -a 256 "$BUILD_PLAN")
+    fi
+    PLAN_HASH=${PLAN_HASH%% *}
+    # Outputs from a different plan can contain weights or slants now removed.
+    DIST_CACHE="$VERDA_CACHE/dist-$PLAN_HASH"
+    mkdir -p "$VERDA_CACHE/build" "$DIST_CACHE"
     VERDA_CACHE=$(cd "$VERDA_CACHE" && pwd)
+    DIST_CACHE=$(cd "$DIST_CACHE" && pwd)
     echo "Using verda cache: $VERDA_CACHE"
     CACHE_MOUNT=(
         -v "$VERDA_CACHE/build":${BUILD_DIR}/iosevka/.build
-        -v "$VERDA_CACHE/dist":${BUILD_DIR}/iosevka/dist
+        -v "$DIST_CACHE":${BUILD_DIR}/iosevka/dist
     )
 fi
 
